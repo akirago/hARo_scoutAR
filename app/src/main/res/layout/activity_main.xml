@@ -6,14 +6,45 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/move_activity"
+    <ImageView
+        android:id="@+id/title_logo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@android:color/holo_green_light"
+        android:foreground="@drawable/haro_scoutar_logo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/haro_view"
+        android:layout_width="350dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="40dp"
+        android:background="@android:color/holo_blue_light"
+        android:foreground="@drawable/game_ar_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_logo" />
+
+    <Button
+        android:id="@+id/move_haro_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="@string/haro_text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@id/move_register_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/haro_view" />
+
+    <Button
+        android:id="@+id/move_register_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register_button_message"
+        app:layout_constraintBottom_toBottomOf="@id/move_haro_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/move_haro_button" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

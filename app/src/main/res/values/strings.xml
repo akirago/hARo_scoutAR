@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">hARo_scoutAR</string>
+    <string name="name">名前</string>
+    <string name="name_input_text">名前を入力</string>
+    <string name="register_info_message">登録情報</string>
+    <string name="twitter_id">TwitterID</string>
+    <string name="github_id">GithubID</string>
+    <string name="send_message">送信します</string>
+    <string name="take_photo_message">写真をとる</string>
+    <string name="haro_text">ハローする</string>
+    <string name="register_button_message">個人情報を登録する</string>
 </resources>

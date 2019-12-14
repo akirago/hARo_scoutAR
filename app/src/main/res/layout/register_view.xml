@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register_info_message"
+        app:layout_constraintBottom_toTopOf="@id/take_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <Button
+        android:id="@+id/take_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/take_photo_message"
+        app:layout_constraintBottom_toTopOf="@id/name_text"
+        app:layout_constraintEnd_toStartOf="@id/photo_image_view"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <ImageView
+        android:id="@+id/photo_image_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_launcher_background"
+        android:foreground="@drawable/ic_launcher_foreground"
+        app:layout_constraintBottom_toBottomOf="@id/take_photo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/take_photo" />
+
+    <TextView
+        android:id="@+id/name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/name"
+        app:layout_constraintBottom_toTopOf="@id/twitter_text"
+        app:layout_constraintEnd_toStartOf="@+id/name_edit_text"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintVertical_bias="0.5"
+        tools:layout_editor_absoluteY="76dp" />
+
+    <EditText
+        android:id="@+id/name_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/name_input_text"
+        app:layout_constraintBottom_toBottomOf="@id/name_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/name_text"
+        tools:layout_editor_absoluteY="65dp" />
+
+    <TextView
+        android:id="@+id/twitter_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/twitter_id"
+        app:layout_constraintBottom_toTopOf="@id/github_text"
+        app:layout_constraintEnd_toStartOf="@id/twitter_edit_text"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name_text"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <EditText
+        android:id="@+id/twitter_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/twitter_id"
+        app:layout_constraintBottom_toBottomOf="@id/twitter_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/twitter_text" />
+
+    <TextView
+        android:id="@+id/github_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/github_id"
+        app:layout_constraintBottom_toBottomOf="@id/send_button"
+        app:layout_constraintEnd_toStartOf="@id/github_edit_text"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/twitter_text"
+        app:layout_constraintVertical_bias="0.5" />
+
+
+    <EditText
+        android:id="@+id/github_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/github_id"
+        app:layout_constraintBottom_toBottomOf="@id/github_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/github_text" />
+
+    <Button
+        android:id="@+id/send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_message"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/github_text"
+        app:layout_constraintVertical_bias="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

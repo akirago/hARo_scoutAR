@@ -59,29 +59,13 @@ sceneform.asset('sampledata/models/Earth/Earth.gltf',
         'sampledata/models/Earth/Earth.sfa',
         'src/main/assets/Earth')
 
-sceneform.asset('sampledata/models/Luna/Luna.gltf',
-        'default',
-        'sampledata/models/Luna/Luna.sfa',
-        'src/main/assets/Luna')
-
-sceneform.asset('sampledata/models/Mercury/Mercury.gltf',
-        'default',
-        'sampledata/models/Mercury/Mercury.sfa',
-        'src/main/assets/Mercury')
-
-sceneform.asset('sampledata/models/Sol/Sol.gltf',
-        'default',
-        'sampledata/models/Sol/Sol.sfa',
-        'src/main/assets/Sol')
-
-
-sceneform.asset('sampledata/models/Venus/Venus.gltf',
-        'default',
-        'sampledata/models/Venus/Venus.sfa',
-        'src/main/assets/Venus')
-
 
 sceneform.asset('sampledata/models/gopher/go_gopher_high.obj',
         'default',
         'sampledata/models/gopher/go_gopher_high.sfa',
         'src/main/assets/go_gopher_high')
+
+sceneform.asset('sampledata/models/ts/ts.gltf',
+        'default',
+        'sampledata/models/ts/ts.sfa',
+        'src/main/assets/ts')

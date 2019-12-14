@@ -46,6 +46,7 @@ public class ArActivity extends AppCompatActivity {
     private ModelRenderable kotlinRenderable;
     private ModelRenderable pythonRenderable;
     private ModelRenderable slacaRenderable;
+    private ModelRenderable tsRenderable;
 //    private ViewRenderable solarControlsRenderable;
 
     private Texture faceMeshTexture;
@@ -108,12 +109,9 @@ public class ArActivity extends AppCompatActivity {
         );
 
         // Build all the planet models.
-        CompletableFuture<ModelRenderable> sunStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Sol.sfb")).build();
-        CompletableFuture<ModelRenderable> mercuryStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Mercury.sfb")).build();
-        CompletableFuture<ModelRenderable> venusStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Venus.sfb")).build();
+
+        CompletableFuture<ModelRenderable> tsStage =
+                ModelRenderable.builder().setSource(this, Uri.parse("ts.sfb")).build();
         CompletableFuture<ModelRenderable> earthStage =
                 ModelRenderable.builder().setSource(this, Uri.parse("Earth.sfb")).build();
         CompletableFuture<ModelRenderable> lunaStage =
@@ -127,12 +125,10 @@ public class ArActivity extends AppCompatActivity {
 //                ViewRenderable.builder().setView(this, R.layout.solar_controls).build();
 
         CompletableFuture.allOf(
-                sunStage,
-                mercuryStage,
-                venusStage,
                 earthStage,
                 lunaStage,
-                gopherStage
+                gopherStage,
+                tsStage
 
         )
                 .handle(
@@ -149,12 +145,14 @@ public class ArActivity extends AppCompatActivity {
                             try {
                                 earthRenderable = earthStage.get();
                                 gopherRenderable = gopherStage.get();
+                                tsRenderable = tsStage.get();
 
                                 // Everything finished loading successfully.
                                 hasFinishedLoading = true;
 
                                 languageMap.put("go",gopherRenderable);
                                 languageMap.put("earth",earthRenderable);
+                                languageMap.put("ts",tsRenderable);
 
                             } catch (InterruptedException | ExecutionException ex) {
                                 DemoUtils.displayError(this, "Unable to load renderable", ex);
@@ -231,7 +229,7 @@ public class ArActivity extends AppCompatActivity {
                             Log.d("haro_node", "num face " + faceList.size());
                             if (faceList.size() != 0 && useFaceNode == null) {
                                 AugmentedFace face = faceList.iterator().next();
-                                List<String> languages = Arrays.asList("go", "scala", "kotlin","python");
+                                List<String> languages = Arrays.asList("ts", "scala", "kotlin","python");
                                 Node faceNode = createFaceSystem(face,languages);
                                 faceNode.setParent(scene);
 //                                AugmentedFaceNode faceNodeTmp = new AugmentedFaceNode(face);
@@ -355,7 +353,7 @@ public class ArActivity extends AppCompatActivity {
         double scale = 0.1f;
         double adder = 0.0f;
         for(String language:languages){
-            createPlanet(language,base,(float)(0.2f+adder*scale),(float)(20f+adder),languageMap.get(language),0.015f*5,0);
+            createPlanet(language,base,(float)(0.2f+adder*scale),(float)(20f+adder),languageMap.get(language),(float)(0.015f*5-0.001f*adder),0);
             adder += 1;
         }
 

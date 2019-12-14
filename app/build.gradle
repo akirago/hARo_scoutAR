@@ -8,7 +8,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "gotitapi.haro_scoutar"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -19,6 +19,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 
@@ -42,6 +46,22 @@ dependencies {
 
     implementation "com.android.support:appcompat-v7:28.0.0"
     implementation 'com.google.ar.sceneform:assets:1.13.0'
+    implementation 'com.google.android.material:material:1.0.0'
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'
+
+sceneform.asset('sampledata/models/Earth/Earth.gltf',
+        'default',
+        'sampledata/models/Earth/Earth.sfa',
+        'src/main/assets/Earth')
+
+sceneform.asset('sampledata/models/Jupiter/Jupiter.gltf',
+        'default',
+        'sampledata/models/Jupiter/Jupiter.sfa',
+        'src/main/assets/Jupiter')
+
+sceneform.asset('sampledata/models/Luna/Luna.gltf',
+        'default',
+        'sampledata/models/Luna/Luna.sfa',
+        'src/main/assets/Luna')

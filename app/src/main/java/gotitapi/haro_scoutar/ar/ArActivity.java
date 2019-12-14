@@ -9,8 +9,10 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.HitResult;
@@ -30,6 +32,8 @@ import com.google.ar.sceneform.rendering.ViewRenderable;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import gotitapi.haro_scoutar.R;
 
 public class ArActivity extends AppCompatActivity {
 
@@ -90,16 +94,7 @@ public class ArActivity extends AppCompatActivity {
                 ModelRenderable.builder().setSource(this, Uri.parse("Earth.sfb")).build();
         CompletableFuture<ModelRenderable> lunaStage =
                 ModelRenderable.builder().setSource(this, Uri.parse("Luna.sfb")).build();
-        CompletableFuture<ModelRenderable> marsStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Mars.sfb")).build();
-        CompletableFuture<ModelRenderable> jupiterStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Jupiter.sfb")).build();
-        CompletableFuture<ModelRenderable> saturnStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Saturn.sfb")).build();
-        CompletableFuture<ModelRenderable> uranusStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Uranus.sfb")).build();
-        CompletableFuture<ModelRenderable> neptuneStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Neptune.sfb")).build();
+
 
         // Build a renderable from a 2D View.
         CompletableFuture<ViewRenderable> solarControlsStage =
@@ -111,11 +106,7 @@ public class ArActivity extends AppCompatActivity {
                 venusStage,
                 earthStage,
                 lunaStage,
-                marsStage,
-                jupiterStage,
-                saturnStage,
-                uranusStage,
-                neptuneStage,
+
                 solarControlsStage)
                 .handle(
                         (notUsed, throwable) -> {
@@ -134,11 +125,6 @@ public class ArActivity extends AppCompatActivity {
                                 venusRenderable = venusStage.get();
                                 earthRenderable = earthStage.get();
                                 lunaRenderable = lunaStage.get();
-                                marsRenderable = marsStage.get();
-                                jupiterRenderable = jupiterStage.get();
-                                saturnRenderable = saturnStage.get();
-                                uranusRenderable = uranusStage.get();
-                                neptuneRenderable = neptuneStage.get();
                                 solarControlsRenderable = solarControlsStage.get();
 
                                 // Everything finished loading successfully.
@@ -441,8 +427,8 @@ public class ArActivity extends AppCompatActivity {
 
         loadingMessageSnackbar =
                 Snackbar.make(
-                        SolarActivity.this.findViewById(android.R.id.content),
-                        R.string.plane_finding,
+                        ArActivity.this.findViewById(android.R.id.content),
+                        "message dayo",
                         Snackbar.LENGTH_INDEFINITE);
         loadingMessageSnackbar.getView().setBackgroundColor(0xbf323232);
         loadingMessageSnackbar.show();

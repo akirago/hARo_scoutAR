@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.PixelCopy;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.ar.core.AugmentedFace;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Vector3;
@@ -50,13 +52,15 @@ public class ArActivity extends AppCompatActivity {
 
     private ArSceneView arSceneView;
 
+    private ModelRenderable iconRenderable;
+
     private ModelRenderable earthRenderable;
     private ModelRenderable gopherRenderable;
     private ModelRenderable kotlinRenderable;
     private ModelRenderable pythonRenderable;
     private ModelRenderable slacaRenderable;
     private ModelRenderable tsRenderable;
-//    private ViewRenderable solarControlsRenderable;
+    //    private ViewRenderable solarControlsRenderable;
     //    private ViewRenderable solarControlsRenderable;
     private boolean notLoading = true;
 
@@ -73,10 +77,12 @@ public class ArActivity extends AppCompatActivity {
     // Astronomical units to meters ratio. Used for positioning the planets of the solar system.
     private static final float AU_TO_METERS = 0.5f;
 
-    private final HashMap<AugmentedFace, Node> faceNodeMap = new HashMap<>();
     private final Map<String, ModelRenderable> languageMap = new HashMap<>();
     private Node useFaceNode = null;
     private FaceArFragment arFragment;
+    private Bitmap icon;
+
+    private ArActivity instance;
 
     @Override
     @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
@@ -161,9 +167,9 @@ public class ArActivity extends AppCompatActivity {
                                 // Everything finished loading successfully.
                                 hasFinishedLoading = true;
 
-                                languageMap.put("go",gopherRenderable);
-                                languageMap.put("earth",earthRenderable);
-                                languageMap.put("ts",tsRenderable);
+                                languageMap.put("go", gopherRenderable);
+                                languageMap.put("earth", earthRenderable);
+                                languageMap.put("ts", tsRenderable);
 
                             } catch (InterruptedException | ExecutionException ex) {
                                 DemoUtils.displayError(this, "Unable to load renderable", ex);
@@ -182,42 +188,39 @@ public class ArActivity extends AppCompatActivity {
         // the face mesh occlusion works correctly.
         arSceneView.setCameraStreamRenderPriority(Renderable.RENDER_PRIORITY_FIRST);
         // Set up a tap gesture detector.
-//        gestureDetector =
-//                new GestureDetector(
-//                        this,
-//                        new GestureDetector.SimpleOnGestureListener() {
-//                            @Override
-//                            public boolean onSingleTapUp(MotionEvent e) {
-//                                onSingleTap(e);
-//                                return true;
-//                            }
-//
+        gestureDetector =
+                new GestureDetector(
+                        this,
+                        new GestureDetector.SimpleOnGestureListener() {
+                            @Override
+                            public boolean onSingleTapUp(MotionEvent e) {
+                                onSingleTap();
+                                return true;
+                            }
+
 //                            @Override
 //                            public boolean onDown(MotionEvent e) {
 //                                return true;
 //                            }
-//                        });
+                        });
 
         // Set a touch listener on the Scene to listen for taps.
 
-//        arSceneView
-//                .getScene()
-//                .setOnTouchListener(
-//                        (HitTestResult hitTestResult, MotionEvent event) -> {
-//                            // If the solar system hasn't been placed yet, detect a tap and then check to see if
-//                            // the tap occurred on an ARCore plane to place the solar system.
+        arSceneView
+                .getScene()
+                .setOnTouchListener(
+                        (HitTestResult hitTestResult, MotionEvent event) -> {
+                            // If the solar system hasn't been placed yet, detect a tap and then check to see if
+                            // the tap occurred on an ARCore plane to place the solar system.
 //                            if (!hasPlacedSolarSystem) {
 //                                return gestureDetector.onTouchEvent(event);
 //                            }
-//
-//                            // Otherwise return false so that the touch event can propagate to the scene.
-//                            return false;
-//                        });
+                            onSingleTap();
 
-//        Texture.builder()
-//                .setSource(this, R.drawable.earth)
-//                .build()
-//                .thenAccept(texture -> faceMeshTexture = texture);
+                            // Otherwise return false so that the touch event can propagate to the scene.
+                            return false;
+                        });
+
         arSceneView
                 .getScene()
                 .addOnUpdateListener(
@@ -279,24 +282,25 @@ public class ArActivity extends AppCompatActivity {
 
                                                     Node faceNode = createFaceSystem(face, languages);
                                                     faceNode.setParent(scene);
-//                                AugmentedFaceNode faceNodeTmp = new AugmentedFaceNode(face);
-//                                faceNodeTmp.setParent(scene);
-//                                faceNodeTmp.setFaceRegionsRenderable(earthRenderable);
-//                                faceNodeTmp.setFaceMeshTexture(faceMeshTexture);
-//                                faceNode = faceNodeTmp;
-//                                Node solarSystem = createSolarSystem();
-                                                    useFaceNode = faceNode;
+                                                    Bitmap icon = responseData.getTwitterData().getImage();
 
-//                                if (languageMap.isEmpty()) {
-//                                    createFaceSystem(faceNode);
-//                                }
+                                                    useFaceNode = faceNode;
 
                                                     Log.d("haro_node", "createNode");
                                                 }
 
                                                 @Override
                                                 public void onError(Throwable e) {
-
+//                                                    AugmentedFace face = faceList.iterator().next();
+//                                                    List<String> languages = Arrays.asList("go");
+//                                                    Node faceNode = createFaceSystem(face, languages);
+//                                                    icon = HttpUtil.INSTANCE.getIcon("https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg");
+//                                                    faceNode.setParent(scene);
+//
+//                                                    Node iconNode = new Node();
+//                                                    iconNode.setRenderable(iconRenderable);
+//                                                    iconNode.setLocalPosition(new Vector3(0.0f, 0.1f, 0.1f));
+//                                                    useFaceNode = faceNode;
                                                 }
                                             });
                                 }, new Handler());
@@ -360,6 +364,7 @@ public class ArActivity extends AppCompatActivity {
 //                            DemoUtils.requestCameraPermission(this, RC_PERMISSIONS);
                         });
         DemoUtils.requestCameraPermission(this, RC_PERMISSIONS);
+        instance = this;
     }
 
 
@@ -403,132 +408,21 @@ public class ArActivity extends AppCompatActivity {
 //        return false;
 //    }
 
-
     private Node createFaceSystem(AugmentedFace face, List<String> languages) {
         AugmentedFaceNode faceNode = new AugmentedFaceNode(face);
         Node base = new Node();
         base.setParent((faceNode));
         base.setLocalPosition(new Vector3(0.0f, 0.0f, 0.1f));
 
-//        languages.forEach(language -> {
-//            // iroiro oku
-//            Node hoge = new Node();
-//            hoge.setParent(faceNode);
-//            hoge.setLocalPosition(new Vector3(0.0f, 0.1f, 0.0f));
-//
-//            Node hogeVisual = new Node();
-//            hogeVisual.setParent(hoge);
-//            hogeVisual.setRenderable(languageMap.get(language));
-//            hogeVisual.setLocalScale(new Vector3(0.1f, 0.1f, 0.1f));
-//        });
-
         double scale = 0.1f;
         double adder = 0.0f;
-        for(String language:languages){
-            createPlanet(language,base,(float)(0.2f+adder*scale),(float)(20f+adder),languageMap.get(language),(float)(0.015f*5-0.001f*adder),0);
+        for (String language : languages) {
+            createPlanet(language, base, (float) (0.2f + adder * scale), (float) (20f + adder), languageMap.get(language), (float) (0.015f * 5 - 0.001f * adder), 0);
             adder += 1;
         }
 
         return faceNode;
     }
-
-
-//    private generateposition() {
-//        Node base = new Node();
-//
-//        Node sun = new Node();
-//        sun.setParent(base);
-//        sun.setLocalPosition(new Vector3(0.0f, 0.5f, 0.0f));
-//
-//        Node sunVisual = new Node();
-//        sunVisual.setParent(sun);
-//        sunVisual.setRenderable(sunRenderable);
-//        sunVisual.setLocalScale(new Vector3(0.5f, 0.5f, 0.5f));
-//
-////        Node solarControls = new Node();
-////        solarControls.setParent(sun);
-////        solarControls.setRenderable(solarControlsRenderable);
-////        solarControls.setLocalPosition(new Vector3(0.0f, 0.25f, 0.0f));
-//
-////        View solarControlsView = solarControlsRenderable.getView();
-////        SeekBar orbitSpeedBar = solarControlsView.findViewById(R.id.orbitSpeedBar);
-////        orbitSpeedBar.setProgress((int) (solarSettings.getOrbitSpeedMultiplier() * 10.0f));
-////        orbitSpeedBar.setOnSeekBarChangeListener(
-////                new SeekBar.OnSeekBarChangeListener() {
-////                    @Override
-////                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-////                        float ratio = (float) progress / (float) orbitSpeedBar.getMax();
-////                        solarSettings.setOrbitSpeedMultiplier(ratio * 10.0f);
-////                    }
-////
-////                    @Override
-////                    public void onStartTrackingTouch(SeekBar seekBar) {
-////                    }
-////
-////                    @Override
-////                    public void onStopTrackingTouch(SeekBar seekBar) {
-////                    }
-////                });
-//
-////        SeekBar rotationSpeedBar = solarControlsView.findViewById(R.id.rotationSpeedBar);
-////        rotationSpeedBar.setProgress((int) (solarSettings.getRotationSpeedMultiplier() * 10.0f));
-////        rotationSpeedBar.setOnSeekBarChangeListener(
-////                new SeekBar.OnSeekBarChangeListener() {
-////                    @Override
-////                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-////                        float ratio = (float) progress / (float) rotationSpeedBar.getMax();
-////                        solarSettings.setRotationSpeedMultiplier(ratio * 10.0f);
-////                    }
-////
-////                    @Override
-////                    public void onStartTrackingTouch(SeekBar seekBar) {
-////                    }
-////
-////                    @Override
-////                    public void onStopTrackingTouch(SeekBar seekBar) {
-////                    }
-////                });
-//
-////        // Toggle the solar controls on and off by tapping the sun.
-////        sunVisual.setOnTapListener(
-////                (hitTestResult, motionEvent) -> solarControls.setEnabled(!solarControls.isEnabled()));
-//
-//        createPlanet("Mercury", sun, 0.4f, 47f, mercuryRenderable, 0.019f, 0.03f);
-//
-//        createPlanet("Venus", sun, 0.7f, 35f, venusRenderable, 0.0475f, 2.64f);
-//
-//        Node earth = createPlanet("Earth", sun, 1.0f, 29f, earthRenderable, 0.05f, 23.4f);
-//
-//        createPlanet("Moon", earth, 0.15f, 100f, lunaRenderable, 0.018f, 6.68f);
-//
-//        return base;
-//    }
-
-    private Node createLanguageModel(
-            String name,
-            Node parent,
-            float auFromParent,
-            float orbitDegreesPerSecond,
-            ModelRenderable renderable,
-            float planetScale,
-            float axisTilt) {
-        // Orbit is a rotating node with no renderable positioned at the sun.
-        // The planet is positioned relative to the orbit so that it appears to rotate around the sun.
-        // This is done instead of making the sun rotate so each planet can orbit at its own speed.
-        RotatingNode orbit = new RotatingNode(solarSettings, true, false, 0);
-        orbit.setDegreesPerSecond(orbitDegreesPerSecond);
-        orbit.setParent(parent);
-
-        // Create the planet and position it relative to the sun.
-        Planet planet =
-                new Planet(
-                        this, name, planetScale, orbitDegreesPerSecond, axisTilt, renderable, solarSettings);
-        planet.setParent(orbit);
-        planet.setLocalPosition(new Vector3(auFromParent * AU_TO_METERS, 0.0f, 0.0f));
-
-        return planet;
-    }
-
 
     private Node createPlanet(
             String name,
@@ -577,4 +471,18 @@ public class ArActivity extends AppCompatActivity {
         loadingMessageSnackbar.dismiss();
         loadingMessageSnackbar = null;
     }
+
+    private void onSingleTap() {
+        Log.d("onTap","tap!");
+        if (icon != null) {
+            Texture.builder().setSource(icon).build().thenAccept(
+                    texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                            material -> {
+                                iconRenderable =
+                                        ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                            })
+            );
+        }
+    }
+
 }

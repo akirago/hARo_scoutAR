@@ -13,8 +13,10 @@ import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Vector3;
+import com.google.ar.sceneform.rendering.MaterialFactory;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
+import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
 
@@ -45,6 +47,7 @@ public class ArActivity extends AppCompatActivity {
     private ModelRenderable earthRenderable;
     private ModelRenderable lunaRenderable;
     private ModelRenderable gopherRenderable;
+    private ModelRenderable kotlinRenderable;
 //    private ViewRenderable solarControlsRenderable;
 
     private Texture faceMeshTexture;
@@ -80,6 +83,15 @@ public class ArActivity extends AppCompatActivity {
         arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
 
         arSceneView = arFragment.getArSceneView();
+        int kotlin = R.drawable.kotlin;
+        Texture.builder().setSource(this, R.drawable.kotlin).build().thenAccept(
+                texture ->       MaterialFactory.makeTransparentWithTexture(this,texture).thenAccept(
+                        material -> {
+                            kotlinRenderable =
+//                                  ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), material);
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f),new Vector3(0.0f, 0.15f, 0.0f),material);
+                        })
+        );
 
         // Build all the planet models.
         CompletableFuture<ModelRenderable> sunStage =
@@ -138,9 +150,12 @@ public class ArActivity extends AppCompatActivity {
                                 DemoUtils.displayError(this, "Unable to load renderable", ex);
                             }
 
+                            languageMap.put("kotlin",kotlinRenderable);
                             return null;
                         });
 
+
+        Scene scene = arSceneView.getScene();
 
         // This is important to make sure that the camera stream renders first so that
         // the face mesh occlusion works correctly.
@@ -163,7 +178,7 @@ public class ArActivity extends AppCompatActivity {
 //                        });
 
         // Set a touch listener on the Scene to listen for taps.
-        Scene scene = arSceneView.getScene();
+
 //        arSceneView
 //                .getScene()
 //                .setOnTouchListener(
@@ -204,7 +219,7 @@ public class ArActivity extends AppCompatActivity {
                             Log.d("haro_node", "num face " + faceList.size());
                             if (faceList.size() != 0 && useFaceNode == null) {
                                 AugmentedFace face = faceList.iterator().next();
-                                List<String> languages = Arrays.asList("go", "earth", "go");
+                                List<String> languages = Arrays.asList("go", "earth", "kotlin");
                                 Node faceNode = createFaceSystem(face,languages);
                                 faceNode.setParent(scene);
 //                                AugmentedFaceNode faceNodeTmp = new AugmentedFaceNode(face);
@@ -480,5 +495,4 @@ public class ArActivity extends AppCompatActivity {
         loadingMessageSnackbar.dismiss();
         loadingMessageSnackbar = null;
     }
-
 }

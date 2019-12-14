@@ -33,7 +33,8 @@ object HttpUtil {
 //    }
 
     fun registerProfile(requestData: RequestData): String {
-        val url = "https://c50cd690.ngrok.io/register"
+        val url = "https://e5a17d44.ngrok.io/register"
+//        val url = "https://c50cd690.ngrok.io/register"
         println(requestData.jsonObject)
         val requestBody =
             requestData.jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
@@ -58,7 +59,8 @@ object HttpUtil {
 
     fun getProfile(bitmap: Bitmap): ResponseData {
         val url =
-            "https://c50cd690.ngrok.io/getinfo"
+//            "https://c50cd690.ngrok.io/getinfo"
+        "https://script.googleusercontent.com/macros/echo?user_content_key=m17C-2O7Y33-T05ZaAtg5NQTW-H6kMQEyJn-WSCNg9ys0YMc2FMYobrhFUr8SKM3gOODLndk1c67P1xeDLvisIwDIcpMORNim5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMkLwWFcKOZPZTQ6A19OYO-qfv_HDvlMqy75g4cvgBOIl7rg4Glfcim8mzDTCqnGIg&lib=MWHiZkIRObrNABHwdCNQqltZcfNXvf530"
         val encodedImage = bitmap.toBase64()
         val requestBody = encodedImage.toRequestBody("application/json".toMediaTypeOrNull())
 

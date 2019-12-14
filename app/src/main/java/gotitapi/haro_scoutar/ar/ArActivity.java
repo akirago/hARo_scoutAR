@@ -83,7 +83,7 @@ public class ArActivity extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_solar);
         arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
 
         arSceneView = arFragment.getArSceneView();

@@ -18,11 +18,13 @@ data class RequestData(
     val twitterId: String,
     val githubId: String
 ) {
-    val jsonObject = JSONObject("data")
-        .put(KEY_NAME, name)
-        .put(KEY_FACE, bitmap.toBase64())
-        .put(KEY_TWITTER, twitterId)
-        .put(KEY_GITHUB, githubId)
+    val jsonObject = JSONObject().put(
+        "data", JSONObject()
+            .put(KEY_NAME, name)
+            .put(KEY_FACE, bitmap.toBase64())
+            .put(KEY_TWITTER, twitterId)
+            .put(KEY_GITHUB, githubId)
+    )
 }
 
 data class ResponseData(val jsonObject: JSONObject) {

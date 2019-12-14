@@ -8,5 +8,5 @@
     <string name="send_message">送信します</string>
     <string name="take_photo_message">写真をとる</string>
     <string name="haro_text">ハローする</string>
-    <string name="register_button_message">個人情報を登録する</string>
+    <string name="register_button_message">個人情報を\n登録する</string>
 </resources>

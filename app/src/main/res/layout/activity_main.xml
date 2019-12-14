@@ -10,41 +10,53 @@
         android:id="@+id/title_logo"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@android:color/holo_green_light"
+        android:background="@android:color/black"
         android:foreground="@drawable/haro_scoutar_logo"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/haro_view"
-        android:layout_width="350dp"
-        android:layout_height="400dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
         android:background="@android:color/holo_blue_light"
         android:foreground="@drawable/game_ar_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_logo" />
 
-    <Button
-        android:id="@+id/move_haro_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/haro_text"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/move_register_button"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/haro_view" />
-
-    <Button
-        android:id="@+id/move_register_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/register_button_message"
-        app:layout_constraintBottom_toBottomOf="@id/move_haro_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/move_haro_button" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/haro_view">
+
+        <TextView
+            android:id="@+id/move_haro_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/holo_orange_light"
+            android:gravity="center"
+            android:text="@string/haro_text"
+            android:textAlignment="center"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/move_register_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/holo_green_light"
+            android:gravity="center"
+            android:text="@string/register_button_message"
+            android:textAlignment="center"
+            android:textSize="30sp" />
+
+    </LinearLayout>
 
 
 

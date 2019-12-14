@@ -43,7 +43,7 @@ public class FaceArFragment extends ArFragment {
 
   @Override
   protected Set<Session.Feature> getSessionFeatures() {
-    return EnumSet.of(Session.Feature.SHARED_CAMERA);
+    return EnumSet.of(Session.Feature.FRONT_CAMERA);
   }
 
   /**

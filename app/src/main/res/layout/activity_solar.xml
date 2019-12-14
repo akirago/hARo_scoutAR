@@ -20,12 +20,6 @@
     android:layout_height="match_parent"
     tools:context=".ar.ArActivity">
 
-<!--  <com.google.ar.sceneform.ArSceneView-->
-<!--      android:id="@+id/ar_scene_view"-->
-<!--      android:layout_width="fill_parent"-->
-<!--      android:layout_height="fill_parent"-->
-<!--      android:layout_gravity="top"/>-->
-
   <fragment android:name= "gotitapi.haro_scoutar.ar.FaceArFragment"
       android:id="@+id/face_fragment"
       android:layout_width="match_parent"

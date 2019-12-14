@@ -23,7 +23,6 @@ import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +33,8 @@ import java.util.concurrent.ExecutionException;
 import gotitapi.haro_scoutar.R;
 import gotitapi.haro_scoutar.api.HttpUtil;
 import gotitapi.haro_scoutar.data.ResponseData;
-import io.reactivex.Scheduler;
 import io.reactivex.Single;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -56,7 +55,8 @@ public class ArActivity extends AppCompatActivity {
     private ModelRenderable kotlinRenderable;
     private ModelRenderable pythonRenderable;
     private ModelRenderable slacaRenderable;
-//    private ViewRenderable solarControlsRenderable;
+    //    private ViewRenderable solarControlsRenderable;
+    private boolean notLoading = true;
 
     private Texture faceMeshTexture;
 
@@ -76,8 +76,6 @@ public class ArActivity extends AppCompatActivity {
     private Node useFaceNode = null;
     private FaceArFragment arFragment;
 
-    private ResponseData data;
-
     @Override
     @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
     // CompletableFuture requires api level 24
@@ -95,27 +93,27 @@ public class ArActivity extends AppCompatActivity {
         arSceneView = arFragment.getArSceneView();
 
         Texture.builder().setSource(this, R.drawable.kotlin).build().thenAccept(
-                texture ->       MaterialFactory.makeTransparentWithTexture(this,texture).thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
                         material -> {
                             kotlinRenderable =
 //                                  ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), material);
-                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f),new Vector3(0.0f, 0.15f, 0.0f),material);
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
                         })
         );
         Texture.builder().setSource(this, R.drawable.python).build().thenAccept(
-                texture ->       MaterialFactory.makeTransparentWithTexture(this,texture).thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
                         material -> {
                             pythonRenderable =
 //                                  ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), material);
-                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f),new Vector3(0.0f, 0.15f, 0.0f),material);
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
                         })
         );
         Texture.builder().setSource(this, R.drawable.scala).build().thenAccept(
-                texture ->       MaterialFactory.makeTransparentWithTexture(this,texture).thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
                         material -> {
                             slacaRenderable =
 //                                  ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), material);
-                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f),new Vector3(0.0f, 0.15f, 0.0f),material);
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
                         })
         );
 
@@ -165,16 +163,16 @@ public class ArActivity extends AppCompatActivity {
                                 // Everything finished loading successfully.
                                 hasFinishedLoading = true;
 
-                                languageMap.put("go",gopherRenderable);
-                                languageMap.put("earth",earthRenderable);
+                                languageMap.put("go", gopherRenderable);
+                                languageMap.put("earth", earthRenderable);
 
                             } catch (InterruptedException | ExecutionException ex) {
                                 DemoUtils.displayError(this, "Unable to load renderable", ex);
                             }
 
-                            languageMap.put("kotlin",kotlinRenderable);
-                            languageMap.put("python",pythonRenderable);
-                            languageMap.put("scala",slacaRenderable);
+                            languageMap.put("kotlin", kotlinRenderable);
+                            languageMap.put("python", pythonRenderable);
+                            languageMap.put("scala", slacaRenderable);
                             return null;
                         });
 
@@ -241,12 +239,31 @@ public class ArActivity extends AppCompatActivity {
                                     arSceneView.getSession().getAllTrackables(AugmentedFace.class);
                             Log.d("haro_node", "ready_load");
                             Log.d("haro_node", "num face " + faceList.size());
-                            if (faceList.size() != 0 && useFaceNode == null) {
+                            if (faceList.size() != 0 && useFaceNode == null && notLoading) {
+                                notLoading = false;
                                 final Bitmap bitmap = Bitmap.createBitmap(arSceneView.getWidth(), arSceneView.getHeight(), Bitmap.Config.ARGB_8888);
                                 PixelCopy.request(arSceneView, bitmap, copyResult -> {
-                                    Single.create((emitter -> {
+                                    Single.create((SingleOnSubscribe<String>) emitter -> {
                                         try {
-                                            data = HttpUtil.INSTANCE.getProfile(bitmap);
+                                            // 一個emitして完了
+                                            emitter.onSuccess("Single Hello");
+                                        } catch (Exception ex) {
+                                            emitter.onError(ex);
+                                        }
+                                    }).subscribe(new DisposableSingleObserver<String>() {
+                                        @Override
+                                        public void onSuccess(String value) {
+                                            // 一回呼ばれる
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+
+                                        }
+                                    });
+                                    Single.create(((SingleOnSubscribe<ResponseData>) emitter -> {
+                                        try {
+                                            ResponseData data = HttpUtil.INSTANCE.getProfile(bitmap);
                                             emitter.onSuccess(data);
                                         } catch (Throwable t) {
                                             emitter.onError(t);
@@ -254,30 +271,28 @@ public class ArActivity extends AppCompatActivity {
                                     }))
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribeWith(new DisposableSingleObserver<Object>() {
+                                            .subscribe(new DisposableSingleObserver<ResponseData>() {
                                                 @Override
-                                                public void onSuccess(Object o) {
-                                                    if (o instanceof ResponseData) {
-                                                        AugmentedFace face = faceList.iterator().next();
+                                                public void onSuccess(ResponseData responseData) {
+                                                    AugmentedFace face = faceList.iterator().next();
 
-                                                        List languages = ((ResponseData)o).getGithubData().getLanguageList();
+                                                    List languages = responseData.getGithubData().getLanguageList();
 
-                                                        Node faceNode = createFaceSystem(face,languages);
-                                                        faceNode.setParent(scene);
+                                                    Node faceNode = createFaceSystem(face, languages);
+                                                    faceNode.setParent(scene);
 //                                AugmentedFaceNode faceNodeTmp = new AugmentedFaceNode(face);
 //                                faceNodeTmp.setParent(scene);
 //                                faceNodeTmp.setFaceRegionsRenderable(earthRenderable);
 //                                faceNodeTmp.setFaceMeshTexture(faceMeshTexture);
 //                                faceNode = faceNodeTmp;
 //                                Node solarSystem = createSolarSystem();
-                                                        useFaceNode = faceNode;
+                                                    useFaceNode = faceNode;
 
 //                                if (languageMap.isEmpty()) {
 //                                    createFaceSystem(faceNode);
 //                                }
 
-                                                        Log.d("haro_node", "createNode");
-                                                    }
+                                                    Log.d("haro_node", "createNode");
                                                 }
 
                                                 @Override
@@ -410,8 +425,8 @@ public class ArActivity extends AppCompatActivity {
 
         double scale = 0.1f;
         double adder = 0.0f;
-        for(String language:languages){
-            createPlanet(language,base,(float)(0.2f+adder*scale),(float)(20f+adder),languageMap.get(language),0.015f*5,0);
+        for (String language : languages) {
+            createPlanet(language, base, (float) (0.2f + adder * scale), (float) (20f + adder), languageMap.get(language), 0.015f * 5, 0);
             adder += 1;
         }
 

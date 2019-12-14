@@ -63,8 +63,8 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 //            )
             launch(Dispatchers.IO) {
                 runCatching {
-                    HttpUtil.getProfile(photo_image_view.drawable.toBitmap())
-//                    HttpUtil.registerProfile(RequestData("", photo_image_view.drawable.toBitmap(), "", ""))
+//                    HttpUtil.getProfile(photo_image_view.drawable.toBitmap())
+                    HttpUtil.registerProfile(RequestData("name", photo_image_view.drawable.toBitmap(), "twitter", "github"))
                 }.onSuccess {
                     withContext(Dispatchers.Main) {
 //                        if (it.isBlank()) {

@@ -2,34 +2,35 @@ package gotitapi.haro_scoutar.ar;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.ar.core.Anchor;
+import com.google.ar.core.AugmentedFace;
 import com.google.ar.core.Frame;
-import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
-import com.google.ar.core.Trackable;
 import com.google.ar.core.TrackingState;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
 import com.google.ar.core.exceptions.UnavailableException;
-import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
-import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.rendering.ViewRenderable;
+import com.google.ar.sceneform.rendering.Texture;
+import com.google.ar.sceneform.ux.AugmentedFaceNode;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -51,12 +52,10 @@ public class ArActivity extends AppCompatActivity {
     private ModelRenderable venusRenderable;
     private ModelRenderable earthRenderable;
     private ModelRenderable lunaRenderable;
-    private ModelRenderable marsRenderable;
-    private ModelRenderable jupiterRenderable;
-    private ModelRenderable saturnRenderable;
-    private ModelRenderable uranusRenderable;
-    private ModelRenderable neptuneRenderable;
-    private ViewRenderable solarControlsRenderable;
+    private ModelRenderable gopherRenderable;
+//    private ViewRenderable solarControlsRenderable;
+
+    private Texture faceMeshTexture;
 
     private final SolarSettings solarSettings = new SolarSettings();
 
@@ -69,6 +68,10 @@ public class ArActivity extends AppCompatActivity {
     // Astronomical units to meters ratio. Used for positioning the planets of the solar system.
     private static final float AU_TO_METERS = 0.5f;
 
+    private final HashMap<AugmentedFace, Node> faceNodeMap = new HashMap<>();
+    private Node useFaceNode = null;
+    private FaceArFragment arFragment;
+
     @Override
     @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
     // CompletableFuture requires api level 24
@@ -80,8 +83,10 @@ public class ArActivity extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_solar);
-        arSceneView = findViewById(R.id.ar_scene_view);
+        setContentView(R.layout.activity_main);
+        arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
+
+        arSceneView = arFragment.getArSceneView();
 
         // Build all the planet models.
         CompletableFuture<ModelRenderable> sunStage =
@@ -94,11 +99,12 @@ public class ArActivity extends AppCompatActivity {
                 ModelRenderable.builder().setSource(this, Uri.parse("Earth.sfb")).build();
         CompletableFuture<ModelRenderable> lunaStage =
                 ModelRenderable.builder().setSource(this, Uri.parse("Luna.sfb")).build();
+        CompletableFuture<ModelRenderable> gopherStage =
+                ModelRenderable.builder().setSource(this, Uri.parse("gopher.sfb")).build();
 
-
-        // Build a renderable from a 2D View.
-        CompletableFuture<ViewRenderable> solarControlsStage =
-                ViewRenderable.builder().setView(this, R.layout.solar_controls).build();
+//        // Build a renderable from a 2D View.
+//        CompletableFuture<ViewRenderable> solarControlsStage =
+//                ViewRenderable.builder().setView(this, R.layout.solar_controls).build();
 
         CompletableFuture.allOf(
                 sunStage,
@@ -106,8 +112,9 @@ public class ArActivity extends AppCompatActivity {
                 venusStage,
                 earthStage,
                 lunaStage,
+                gopherStage
 
-                solarControlsStage)
+                )
                 .handle(
                         (notUsed, throwable) -> {
                             // When you build a Renderable, Sceneform loads its resources in the background while
@@ -125,7 +132,7 @@ public class ArActivity extends AppCompatActivity {
                                 venusRenderable = venusStage.get();
                                 earthRenderable = earthStage.get();
                                 lunaRenderable = lunaStage.get();
-                                solarControlsRenderable = solarControlsStage.get();
+                                gopherRenderable = gopherStage.get();
 
                                 // Everything finished loading successfully.
                                 hasFinishedLoading = true;
@@ -138,44 +145,53 @@ public class ArActivity extends AppCompatActivity {
                         });
 
         // Set up a tap gesture detector.
-        gestureDetector =
-                new GestureDetector(
-                        this,
-                        new GestureDetector.SimpleOnGestureListener() {
-                            @Override
-                            public boolean onSingleTapUp(MotionEvent e) {
-                                onSingleTap(e);
-                                return true;
-                            }
-
-                            @Override
-                            public boolean onDown(MotionEvent e) {
-                                return true;
-                            }
-                        });
+//        gestureDetector =
+//                new GestureDetector(
+//                        this,
+//                        new GestureDetector.SimpleOnGestureListener() {
+//                            @Override
+//                            public boolean onSingleTapUp(MotionEvent e) {
+//                                onSingleTap(e);
+//                                return true;
+//                            }
+//
+//                            @Override
+//                            public boolean onDown(MotionEvent e) {
+//                                return true;
+//                            }
+//                        });
 
         // Set a touch listener on the Scene to listen for taps.
-        arSceneView
-                .getScene()
-                .setOnTouchListener(
-                        (HitTestResult hitTestResult, MotionEvent event) -> {
-                            // If the solar system hasn't been placed yet, detect a tap and then check to see if
-                            // the tap occurred on an ARCore plane to place the solar system.
-                            if (!hasPlacedSolarSystem) {
-                                return gestureDetector.onTouchEvent(event);
-                            }
+        Scene scene = arSceneView.getScene();
+//        arSceneView
+//                .getScene()
+//                .setOnTouchListener(
+//                        (HitTestResult hitTestResult, MotionEvent event) -> {
+//                            // If the solar system hasn't been placed yet, detect a tap and then check to see if
+//                            // the tap occurred on an ARCore plane to place the solar system.
+//                            if (!hasPlacedSolarSystem) {
+//                                return gestureDetector.onTouchEvent(event);
+//                            }
+//
+//                            // Otherwise return false so that the touch event can propagate to the scene.
+//                            return false;
+//                        });
 
-                            // Otherwise return false so that the touch event can propagate to the scene.
-                            return false;
-                        });
-
-        // Set an update listener on the Scene that will hide the loading message once a Plane is
-        // detected.
+//        Texture.builder()
+//                .setSource(this, R.drawable.earth)
+//                .build()
+//                .thenAccept(texture -> faceMeshTexture = texture);
         arSceneView
                 .getScene()
                 .addOnUpdateListener(
                         frameTime -> {
-                            if (loadingMessageSnackbar == null) {
+//                            if (loadingMessageSnackbar == null) {
+//                                return;
+//                            }
+//                            if (earthRenderable == null || faceMeshTexture == null) {
+//                                return;
+//                            }
+                            if(earthRenderable == null){
                                 return;
                             }
 
@@ -193,11 +209,68 @@ public class ArActivity extends AppCompatActivity {
                                     hideLoadingMessage();
                                 }
                             }
-                        });
 
-        // Lastly request CAMERA permission which is required by ARCore.
-        DemoUtils.requestCameraPermission(this, RC_PERMISSIONS);
+                            // Make new AugmentedFaceNodes for any new faces.
+                            Collection<AugmentedFace> faceList =
+                                    arSceneView.getSession().getAllTrackables(AugmentedFace.class);
+                            Log.d("haro_node","ready_load");
+                            Log.d("haro_node","num face " + faceList.size());
+                            if (faceList.size() != 0) {
+                                AugmentedFace face = faceList.iterator().next();
+
+                                Node faceNode = createFaceSystem(face);
+                                faceNode.setParent(scene);
+//                                AugmentedFaceNode faceNodeTmp = new AugmentedFaceNode(face);
+//                                faceNodeTmp.setParent(scene);
+//                                faceNodeTmp.setFaceRegionsRenderable(earthRenderable);
+//                                faceNodeTmp.setFaceMeshTexture(faceMeshTexture);
+//                                faceNode = faceNodeTmp;
+
+                                Node solarSystem = createSolarSystem();
+                                useFaceNode =faceNode;
+                                faceNodeMap.put(face, solarSystem);
+                                Log.d("haro_node","createNode");
+                            }
+
+
+//                            for (AugmentedFace face : faceList) {
+//                                if (!faceNodeMap.containsKey(face)) {
+//                                    tryPlaceFaceSystem(frameTime,);
+//
+//                                }
+//                            }
+
+                            // Remove any AugmentedFaceNodes associated with an AugmentedFace that stopped tracking.
+                            // 複数でやるとき
+//                            Iterator<Map.Entry<AugmentedFace, AugmentedFaceNode>> iter =
+//                                    faceNodeMap.entrySet().iterator();
+//                            while (iter.hasNext()) {
+//                                Map.Entry<AugmentedFace, AugmentedFaceNode> entry = iter.next();
+//                                AugmentedFace face = entry.getKey();
+//                                if (face.getTrackingState() == TrackingState.STOPPED) {
+//                                    AugmentedFaceNode faceNode = entry.getValue();
+//                                    faceNode.setParent(null);
+//                                    iter.remove();
+//                                }
+//                            }
+
+                            Iterator<Map.Entry<AugmentedFace, Node>> iter = faceNodeMap.entrySet().iterator();
+                            if (iter.hasNext()) {
+                                Map.Entry<AugmentedFace, Node> faceNodeEntry = iter.next();
+                                AugmentedFace face = faceNodeEntry.getKey();
+                                if (face.getTrackingState() == TrackingState.STOPPED) {
+                                    Node faceNode = faceNodeEntry.getValue();
+                                    faceNode.setParent(null);
+                                    iter.remove();
+//                                }
+                                }
+                            }
+
+                            // Lastly request CAMERA permission which is required by ARCore.
+//                            DemoUtils.requestCameraPermission(this, RC_PERMISSIONS);
+                        });
     }
+
 
     @Override
     protected void onResume() {
@@ -285,37 +358,57 @@ public class ArActivity extends AppCompatActivity {
         }
     }
 
-    private void onSingleTap(MotionEvent tap) {
-        if (!hasFinishedLoading) {
-            // We can't do anything yet.
-            return;
-        }
+//    private void onSingleTap(MotionEvent tap) {
+//        if (!hasFinishedLoading) {
+//            // We can't do anything yet.
+//            return;
+//        }
+//
+//        Frame frame = arSceneView.getArFrame();
+//        if (frame != null) {
+//            if (!hasPlacedSolarSystem && tryPlaceSolarSystem(tap, frame)) {
+//                hasPlacedSolarSystem = true;
+//            }
+//        }
+//    }
 
-        Frame frame = arSceneView.getArFrame();
-        if (frame != null) {
-            if (!hasPlacedSolarSystem && tryPlaceSolarSystem(tap, frame)) {
-                hasPlacedSolarSystem = true;
-            }
-        }
-    }
+//    private boolean tryPlaceSolarSystem(MotionEvent tap, Frame frame, AugmentedFace face) {
+//        if (tap != null && face.getTrackingState() == TrackingState.TRACKING) {
+//            for (HitResult hit : frame.hitTest(tap)) {
+//                Trackable trackable = hit.getTrackable();
+//                if (trackable instanceof Plane && ((Plane) trackable).isPoseInPolygon(hit.getHitPose())) {
+//                    // Create the Anchor.
+//                    Anchor anchor = hit.createAnchor();
+//                    AnchorNode anchorNode = new AnchorNode(anchor);
+//                    anchorNode.setParent(arSceneView.getScene());
+//                    Node solarSystem = createSolarSystem();
+//                    anchorNode.addChild(solarSystem);
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
 
-    private boolean tryPlaceSolarSystem(MotionEvent tap, Frame frame) {
-        if (tap != null && frame.getCamera().getTrackingState() == TrackingState.TRACKING) {
-            for (HitResult hit : frame.hitTest(tap)) {
-                Trackable trackable = hit.getTrackable();
-                if (trackable instanceof Plane && ((Plane) trackable).isPoseInPolygon(hit.getHitPose())) {
-                    // Create the Anchor.
-                    Anchor anchor = hit.createAnchor();
-                    AnchorNode anchorNode = new AnchorNode(anchor);
-                    anchorNode.setParent(arSceneView.getScene());
-                    Node solarSystem = createSolarSystem();
-                    anchorNode.addChild(solarSystem);
-                    return true;
-                }
-            }
-        }
 
-        return false;
+
+    private Node createFaceSystem(AugmentedFace face){
+        AugmentedFaceNode faceNode = new AugmentedFaceNode(face);
+
+        Node hoge = new Node();
+        hoge.setParent(faceNode);
+        hoge.setLocalPosition(new Vector3(0.0f, 0.5f, 0.0f));
+
+        Node hogeVisual = new Node();
+        hogeVisual.setParent(hoge);
+        hogeVisual.setRenderable(earthRenderable);
+        hogeVisual.setLocalScale(new Vector3(0.5f, 0.5f, 0.5f));
+
+        faceNode.setFaceRegionsRenderable(earthRenderable);
+        faceNode.setFaceMeshTexture(faceMeshTexture);
+
+        return faceNode;
     }
 
     private Node createSolarSystem() {
@@ -330,49 +423,53 @@ public class ArActivity extends AppCompatActivity {
         sunVisual.setRenderable(sunRenderable);
         sunVisual.setLocalScale(new Vector3(0.5f, 0.5f, 0.5f));
 
-        Node solarControls = new Node();
-        solarControls.setParent(sun);
-        solarControls.setRenderable(solarControlsRenderable);
-        solarControls.setLocalPosition(new Vector3(0.0f, 0.25f, 0.0f));
+//        Node solarControls = new Node();
+//        solarControls.setParent(sun);
+//        solarControls.setRenderable(solarControlsRenderable);
+//        solarControls.setLocalPosition(new Vector3(0.0f, 0.25f, 0.0f));
 
-        View solarControlsView = solarControlsRenderable.getView();
-        SeekBar orbitSpeedBar = solarControlsView.findViewById(R.id.orbitSpeedBar);
-        orbitSpeedBar.setProgress((int) (solarSettings.getOrbitSpeedMultiplier() * 10.0f));
-        orbitSpeedBar.setOnSeekBarChangeListener(
-                new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        float ratio = (float) progress / (float) orbitSpeedBar.getMax();
-                        solarSettings.setOrbitSpeedMultiplier(ratio * 10.0f);
-                    }
+//        View solarControlsView = solarControlsRenderable.getView();
+//        SeekBar orbitSpeedBar = solarControlsView.findViewById(R.id.orbitSpeedBar);
+//        orbitSpeedBar.setProgress((int) (solarSettings.getOrbitSpeedMultiplier() * 10.0f));
+//        orbitSpeedBar.setOnSeekBarChangeListener(
+//                new SeekBar.OnSeekBarChangeListener() {
+//                    @Override
+//                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                        float ratio = (float) progress / (float) orbitSpeedBar.getMax();
+//                        solarSettings.setOrbitSpeedMultiplier(ratio * 10.0f);
+//                    }
+//
+//                    @Override
+//                    public void onStartTrackingTouch(SeekBar seekBar) {
+//                    }
+//
+//                    @Override
+//                    public void onStopTrackingTouch(SeekBar seekBar) {
+//                    }
+//                });
 
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {}
+//        SeekBar rotationSpeedBar = solarControlsView.findViewById(R.id.rotationSpeedBar);
+//        rotationSpeedBar.setProgress((int) (solarSettings.getRotationSpeedMultiplier() * 10.0f));
+//        rotationSpeedBar.setOnSeekBarChangeListener(
+//                new SeekBar.OnSeekBarChangeListener() {
+//                    @Override
+//                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                        float ratio = (float) progress / (float) rotationSpeedBar.getMax();
+//                        solarSettings.setRotationSpeedMultiplier(ratio * 10.0f);
+//                    }
+//
+//                    @Override
+//                    public void onStartTrackingTouch(SeekBar seekBar) {
+//                    }
+//
+//                    @Override
+//                    public void onStopTrackingTouch(SeekBar seekBar) {
+//                    }
+//                });
 
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {}
-                });
-
-        SeekBar rotationSpeedBar = solarControlsView.findViewById(R.id.rotationSpeedBar);
-        rotationSpeedBar.setProgress((int) (solarSettings.getRotationSpeedMultiplier() * 10.0f));
-        rotationSpeedBar.setOnSeekBarChangeListener(
-                new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        float ratio = (float) progress / (float) rotationSpeedBar.getMax();
-                        solarSettings.setRotationSpeedMultiplier(ratio * 10.0f);
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {}
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {}
-                });
-
-        // Toggle the solar controls on and off by tapping the sun.
-        sunVisual.setOnTapListener(
-                (hitTestResult, motionEvent) -> solarControls.setEnabled(!solarControls.isEnabled()));
+//        // Toggle the solar controls on and off by tapping the sun.
+//        sunVisual.setOnTapListener(
+//                (hitTestResult, motionEvent) -> solarControls.setEnabled(!solarControls.isEnabled()));
 
         createPlanet("Mercury", sun, 0.4f, 47f, mercuryRenderable, 0.019f, 0.03f);
 
@@ -381,16 +478,6 @@ public class ArActivity extends AppCompatActivity {
         Node earth = createPlanet("Earth", sun, 1.0f, 29f, earthRenderable, 0.05f, 23.4f);
 
         createPlanet("Moon", earth, 0.15f, 100f, lunaRenderable, 0.018f, 6.68f);
-
-        createPlanet("Mars", sun, 1.5f, 24f, marsRenderable, 0.0265f, 25.19f);
-
-        createPlanet("Jupiter", sun, 2.2f, 13f, jupiterRenderable, 0.16f, 3.13f);
-
-        createPlanet("Saturn", sun, 3.5f, 9f, saturnRenderable, 0.1325f, 26.73f);
-
-        createPlanet("Uranus", sun, 5.2f, 7f, uranusRenderable, 0.1f, 82.23f);
-
-        createPlanet("Neptune", sun, 6.1f, 5f, neptuneRenderable, 0.074f, 28.32f);
 
         return base;
     }

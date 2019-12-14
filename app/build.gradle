@@ -77,3 +77,9 @@ sceneform.asset('sampledata/models/Venus/Venus.gltf',
         'default',
         'sampledata/models/Venus/Venus.sfa',
         'src/main/assets/Venus')
+
+
+sceneform.asset('sampledata/models/gopher/go_gopher_high.obj',
+        'default',
+        'sampledata/models/gopher/go_gopher_high.sfa',
+        'src/main/assets/go_gopher_high')

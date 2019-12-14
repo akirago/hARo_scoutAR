@@ -134,7 +134,7 @@ public class RotatingNode extends Node {
       if (clockwise) {
         angle = 360 - angle;
       }
-      Quaternion orientation = Quaternion.axisAngle(new Vector3(0.0f, 1.0f, 0.0f), angle);
+      Quaternion orientation = Quaternion.axisAngle(new Vector3(0.0f, 0.0f, 1.0f), angle);
       orientations[i] = Quaternion.multiply(baseOrientation, orientation);
     }
 

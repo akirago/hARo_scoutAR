@@ -41,13 +41,11 @@ public class ArActivity extends AppCompatActivity {
 
     private ArSceneView arSceneView;
 
-    private ModelRenderable sunRenderable;
-    private ModelRenderable mercuryRenderable;
-    private ModelRenderable venusRenderable;
     private ModelRenderable earthRenderable;
-    private ModelRenderable lunaRenderable;
     private ModelRenderable gopherRenderable;
     private ModelRenderable kotlinRenderable;
+    private ModelRenderable pythonRenderable;
+    private ModelRenderable slacaRenderable;
 //    private ViewRenderable solarControlsRenderable;
 
     private Texture faceMeshTexture;
@@ -83,11 +81,27 @@ public class ArActivity extends AppCompatActivity {
         arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
 
         arSceneView = arFragment.getArSceneView();
-        int kotlin = R.drawable.kotlin;
+
         Texture.builder().setSource(this, R.drawable.kotlin).build().thenAccept(
                 texture ->       MaterialFactory.makeTransparentWithTexture(this,texture).thenAccept(
                         material -> {
                             kotlinRenderable =
+//                                  ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), material);
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f),new Vector3(0.0f, 0.15f, 0.0f),material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.python).build().thenAccept(
+                texture ->       MaterialFactory.makeTransparentWithTexture(this,texture).thenAccept(
+                        material -> {
+                            pythonRenderable =
+//                                  ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), material);
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f),new Vector3(0.0f, 0.15f, 0.0f),material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.scala).build().thenAccept(
+                texture ->       MaterialFactory.makeTransparentWithTexture(this,texture).thenAccept(
+                        material -> {
+                            slacaRenderable =
 //                                  ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), material);
                                     ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f),new Vector3(0.0f, 0.15f, 0.0f),material);
                         })
@@ -133,11 +147,7 @@ public class ArActivity extends AppCompatActivity {
                             }
 
                             try {
-                                sunRenderable = sunStage.get();
-                                mercuryRenderable = mercuryStage.get();
-                                venusRenderable = venusStage.get();
                                 earthRenderable = earthStage.get();
-                                lunaRenderable = lunaStage.get();
                                 gopherRenderable = gopherStage.get();
 
                                 // Everything finished loading successfully.
@@ -151,6 +161,8 @@ public class ArActivity extends AppCompatActivity {
                             }
 
                             languageMap.put("kotlin",kotlinRenderable);
+                            languageMap.put("python",pythonRenderable);
+                            languageMap.put("scala",slacaRenderable);
                             return null;
                         });
 
@@ -219,7 +231,7 @@ public class ArActivity extends AppCompatActivity {
                             Log.d("haro_node", "num face " + faceList.size());
                             if (faceList.size() != 0 && useFaceNode == null) {
                                 AugmentedFace face = faceList.iterator().next();
-                                List<String> languages = Arrays.asList("go", "earth", "kotlin");
+                                List<String> languages = Arrays.asList("go", "scala", "kotlin","python");
                                 Node faceNode = createFaceSystem(face,languages);
                                 faceNode.setParent(scene);
 //                                AugmentedFaceNode faceNodeTmp = new AugmentedFaceNode(face);

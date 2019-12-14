@@ -36,21 +36,19 @@ object HttpUtil {
 //    }
 
     // get twitter icon
-    fun getIcon(url: String): Bitmap? {
+    fun getIcon(url: String): Bitmap {
         val request = Request.Builder().url(url).get().build()
 
         val response: Response
         try {
             response = client.newCall(request).execute()
-            Log.d("httpconnection success", response.body?.string())
+//            Log.d("httpconnection success", response.body!!.byteStream().toString())
         } catch (e: Exception) {
             Log.e("httpconnection error", e.message + e.cause)
             throw IOException()
         }
 
-         val icon = BitmapFactory.decodeStream(response.body!!.byteStream())
-
-        return icon
+        return BitmapFactory.decodeStream(response.body!!.byteStream())
     }
 
 

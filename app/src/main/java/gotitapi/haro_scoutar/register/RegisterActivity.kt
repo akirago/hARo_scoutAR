@@ -19,6 +19,10 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
         setContentView(R.layout.register_view)
 
+        take_photo.setOnClickListener {
+
+        }
+
         send_button.setOnClickListener {
             val data = RequestData(
                 name_edit_text.text.toString(),

@@ -1,9 +1,12 @@
 package gotitapi.haro_scoutar.ar;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.PixelCopy;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,6 +32,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import gotitapi.haro_scoutar.R;
+import gotitapi.haro_scoutar.api.HttpUtil;
+import gotitapi.haro_scoutar.data.ResponseData;
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class ArActivity extends AppCompatActivity {
 
@@ -65,6 +75,8 @@ public class ArActivity extends AppCompatActivity {
     private final Map<String, ModelRenderable> languageMap = new HashMap<>();
     private Node useFaceNode = null;
     private FaceArFragment arFragment;
+
+    private ResponseData data;
 
     @Override
     @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
@@ -230,23 +242,67 @@ public class ArActivity extends AppCompatActivity {
                             Log.d("haro_node", "ready_load");
                             Log.d("haro_node", "num face " + faceList.size());
                             if (faceList.size() != 0 && useFaceNode == null) {
-                                AugmentedFace face = faceList.iterator().next();
-                                List<String> languages = Arrays.asList("go", "scala", "kotlin","python");
-                                Node faceNode = createFaceSystem(face,languages);
-                                faceNode.setParent(scene);
+                                final Bitmap bitmap = Bitmap.createBitmap(arSceneView.getWidth(), arSceneView.getHeight(), Bitmap.Config.ARGB_8888);
+                                PixelCopy.request(arSceneView, bitmap, copyResult -> {
+                                    Single.create((emitter -> {
+                                        try {
+                                            data = HttpUtil.INSTANCE.getProfile(bitmap);
+                                            emitter.onSuccess(data);
+                                        } catch (Throwable t) {
+                                            emitter.onError(t);
+                                        }
+                                    }))
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribeWith(new DisposableSingleObserver<Object>() {
+                                                @Override
+                                                public void onSuccess(Object o) {
+                                                    if (o instanceof ResponseData) {
+                                                        AugmentedFace face = faceList.iterator().next();
+
+                                                        List languages = ((ResponseData)o).getGithubData().getLanguageList();
+
+                                                        Node faceNode = createFaceSystem(face,languages);
+                                                        faceNode.setParent(scene);
 //                                AugmentedFaceNode faceNodeTmp = new AugmentedFaceNode(face);
 //                                faceNodeTmp.setParent(scene);
 //                                faceNodeTmp.setFaceRegionsRenderable(earthRenderable);
 //                                faceNodeTmp.setFaceMeshTexture(faceMeshTexture);
 //                                faceNode = faceNodeTmp;
 //                                Node solarSystem = createSolarSystem();
-                                useFaceNode = faceNode;
+                                                        useFaceNode = faceNode;
 
 //                                if (languageMap.isEmpty()) {
 //                                    createFaceSystem(faceNode);
 //                                }
 
-                                Log.d("haro_node", "createNode");
+                                                        Log.d("haro_node", "createNode");
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onError(Throwable e) {
+
+                                                }
+                                            });
+                                }, new Handler());
+//                                AugmentedFace face = faceList.iterator().next();
+//                                List<String> languages = Arrays.asList("go", "earth", "kotlin");
+//                                Node faceNode = createFaceSystem(face,languages);
+//                                faceNode.setParent(scene);
+////                                AugmentedFaceNode faceNodeTmp = new AugmentedFaceNode(face);
+////                                faceNodeTmp.setParent(scene);
+////                                faceNodeTmp.setFaceRegionsRenderable(earthRenderable);
+////                                faceNodeTmp.setFaceMeshTexture(faceMeshTexture);
+////                                faceNode = faceNodeTmp;
+////                                Node solarSystem = createSolarSystem();
+//                                useFaceNode = faceNode;
+//
+////                                if (languageMap.isEmpty()) {
+////                                    createFaceSystem(faceNode);
+////                                }
+//
+//                                Log.d("haro_node", "createNode");
                             } else if (faceList.size() == 0 && useFaceNode != null) {
                                 useFaceNode.setParent(null);
                                 useFaceNode = null;

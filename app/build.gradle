@@ -8,7 +8,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "gotitapi.haro_scoutar"
-        minSdkVersion 24
+        minSdkVersion 28
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -39,6 +39,15 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'com.facebook.stetho:stetho:1.5.1'
+
+    //RxKotlin https://github.com/ReactiveX/RxKotlin
+    implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
+
+    //RxAndroid https://github.com/ReactiveX/RxAndroid
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+
+    //RxJava https://github.com/ReactiveX/RxJava
+    implementation "io.reactivex.rxjava2:rxjava:2.2.15"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

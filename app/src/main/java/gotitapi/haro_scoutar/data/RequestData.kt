@@ -45,9 +45,9 @@ data class GithubData(val jsonObject: JSONObject) {
     val introduction = jsonObject.optString(KEY_INTRODUCTION, "")
     val languageList = jsonObject.getJSONArray("language").let {
         val list = ArrayList<String>()
-        for (i in 0 until it.length()) {
-            list.add(it[i] as String)
-        }
+//        for (i in 0 until it.length()) {
+//            list.add(it[i] as String)
+//        }
         list
     }
 }

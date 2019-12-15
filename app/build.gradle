@@ -78,3 +78,8 @@ sceneform.asset('sampledata/models/ts/ts.gltf',
         'default',
         'sampledata/models/ts/ts.sfa',
         'src/main/assets/ts')
+
+sceneform.asset('sampledata/models/loading/loading.gltf',
+        'default',
+        'sampledata/models/loading/loading.sfa',
+        'src/main/assets/loading')

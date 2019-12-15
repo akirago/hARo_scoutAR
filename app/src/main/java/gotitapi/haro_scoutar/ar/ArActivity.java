@@ -19,6 +19,7 @@ import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.HitTestResult;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.Scene;
+import com.google.ar.sceneform.math.Quaternion;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.MaterialFactory;
 import com.google.ar.sceneform.rendering.ModelRenderable;
@@ -147,7 +148,7 @@ public class ArActivity extends AppCompatActivity {
         CompletableFuture<ModelRenderable> gopherStage =
                 ModelRenderable.builder().setSource(this, Uri.parse("gopher.sfb")).build();
         CompletableFuture<ModelRenderable> loadingStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("gopher.sfb")).build();
+                ModelRenderable.builder().setSource(this, Uri.parse("loading.sfb")).build();
 
 
 //        // Build a renderable from a 2D View.
@@ -185,6 +186,7 @@ public class ArActivity extends AppCompatActivity {
                                 languageMap.put("go", gopherRenderable);
                                 languageMap.put("earth", earthRenderable);
                                 languageMap.put("ts", tsRenderable);
+
 
                             } catch (InterruptedException | ExecutionException ex) {
                                 DemoUtils.displayError(this, "Unable to load renderable", ex);
@@ -240,12 +242,6 @@ public class ArActivity extends AppCompatActivity {
                 .getScene()
                 .addOnUpdateListener(
                         frameTime -> {
-//                            if (loadingMessageSnackbar == null) {
-//                                return;
-//                            }
-//                            if (earthRenderable == null || faceMeshTexture == null) {
-//                                return;
-//                            }
                             if (earthRenderable == null) {
                                 return;
                             }
@@ -258,6 +254,12 @@ public class ArActivity extends AppCompatActivity {
                             Log.d("haro_node", "num face " + faceList.size());
                             if (faceList.size() != 0 && useFaceNode == null && notLoading) {
                                 notLoading = false;
+
+                                AugmentedFace face = faceList.iterator().next();
+                                AugmentedFaceNode faceNode = new AugmentedFaceNode(face);
+                                faceNode.setParent(scene);
+                                useFaceNode = faceNode;
+
                                 final Bitmap bitmap = Bitmap.createBitmap(arSceneView.getWidth(), arSceneView.getHeight(), Bitmap.Config.ARGB_8888);
                                 PixelCopy.request(arSceneView, bitmap, copyResult -> {
                                     Single.create((SingleOnSubscribe<String>) emitter -> {
@@ -278,6 +280,13 @@ public class ArActivity extends AppCompatActivity {
 
                                         }
                                     });
+                                    Node loading = new Node();
+                                    loading.setParent(faceNode);
+                                    loading.setRenderable(loadingRenderable);
+                                    loading.setLocalScale(new Vector3(3.0f, 3.0f, 3.0f));
+                                    loading.setLocalPosition(new Vector3(0.0f, 0.0f, 0.1f));
+                                    loading.setLocalRotation(Quaternion.axisAngle(new Vector3(1.0f, 0.0f, 0.0f),90));
+
                                     Single.create(((SingleOnSubscribe<ResponseData>) emitter -> {
                                         try {
 //                                            emitter.onError(new Throwable());
@@ -293,16 +302,10 @@ public class ArActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(ResponseData responseData) {
                                                     Toast.makeText(instance, "認証に成功しました", Toast.LENGTH_LONG).show();
-
-                                                    AugmentedFace face = faceList.iterator().next();
+                                                    loading.setParent(null);
 
                                                     List languages = responseData.getGithubData().getLanguageList();
-
-                                                    Node faceNode = createFaceSystem(face, languages);
-                                                    faceNode.setParent(scene);
-//                                                    Bitmap icon = responseData.getTwitterData().getImage();
-
-                                                    useFaceNode = faceNode;
+                                                    createFaceSystem(faceNode, languages);
 
                                                     Log.d("haro_node", "createNode");
                                                 }
@@ -310,9 +313,10 @@ public class ArActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onError(Throwable e) {
                                                     Toast.makeText(instance, "認証に失敗しました", Toast.LENGTH_LONG).show();
-                                                    AugmentedFace face = faceList.iterator().next();
+                                                    loading.setParent(null);
                                                     List<String> languages = Arrays.asList("go");
-                                                    Node faceNode = createFaceSystem(face, languages);
+
+                                                    createFaceSystem(faceNode,languages);
                                                     faceNode.setParent(scene);
                                                     useFaceNode = faceNode;
 
@@ -369,6 +373,7 @@ public class ArActivity extends AppCompatActivity {
                             } else if (faceList.size() == 0 && useFaceNode != null) {
                                 useFaceNode.setParent(null);
                                 useFaceNode = null;
+                                notLoading = true;
                             }
 
 
@@ -453,8 +458,7 @@ public class ArActivity extends AppCompatActivity {
 //        return false;
 //    }
 
-    private Node createFaceSystem(AugmentedFace face, List<String> languages) {
-        AugmentedFaceNode faceNode = new AugmentedFaceNode(face);
+    private Node createFaceSystem(AugmentedFaceNode faceNode, List<String> languages) {
         Node base = new Node();
         base.setParent((faceNode));
         base.setLocalPosition(new Vector3(0.0f, 0.0f, 0.1f));

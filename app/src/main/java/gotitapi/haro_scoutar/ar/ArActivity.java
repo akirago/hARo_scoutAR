@@ -284,9 +284,9 @@ public class ArActivity extends AppCompatActivity {
                                 // Everything finished loading successfully.
                                 hasFinishedLoading = true;
 
-                                languageMap.put("go", gopherRenderable);
+                                languageMap.put("Go", gopherRenderable);
                                 languageMap.put("earth", earthRenderable);
-                                languageMap.put("ts", tsRenderable);
+                                languageMap.put("TypeScript", tsRenderable);
 
 
                             } catch (InterruptedException | ExecutionException ex) {
@@ -426,9 +426,9 @@ public class ArActivity extends AppCompatActivity {
 
                                                 @Override
                                                 public void onError(Throwable e) {
-//                                                    Toast.makeText(instance, "認証に失敗しました", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(instance, "認証に失敗しました", Toast.LENGTH_LONG).show();
                                                     loading.setParent(null);
-                                                    List<String> languages = Arrays.asList("java","kotlin","java","kotlin","python");
+                                                    List<String> languages = Arrays.asList("Go");
 
                                                     createFaceSystem(faceNode,languages);
                                                     faceNode.setParent(scene);

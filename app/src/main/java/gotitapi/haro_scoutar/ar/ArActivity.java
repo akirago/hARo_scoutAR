@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +26,7 @@ import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +55,7 @@ public class ArActivity extends AppCompatActivity {
     private ArSceneView arSceneView;
 
     private ModelRenderable iconRenderable;
+    private ModelRenderable loadingRenderable;
 
     private ModelRenderable earthRenderable;
     private ModelRenderable gopherRenderable;
@@ -120,10 +123,17 @@ public class ArActivity extends AppCompatActivity {
                 texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
                         material -> {
                             slacaRenderable =
-//                                  ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), material);
                                     ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
                         })
         );
+        Texture.builder().setSource(this, R.drawable.loading).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            slacaRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+
 
         // Build all the planet models.
 
@@ -135,6 +145,8 @@ public class ArActivity extends AppCompatActivity {
                 ModelRenderable.builder().setSource(this, Uri.parse("Luna.sfb")).build();
         CompletableFuture<ModelRenderable> gopherStage =
                 ModelRenderable.builder().setSource(this, Uri.parse("gopher.sfb")).build();
+        CompletableFuture<ModelRenderable>  loadingStage=
+                ModelRenderable.builder().setSource(this, Uri.parse("gopher.sfb")).build();
 
 
 //        // Build a renderable from a 2D View.
@@ -145,7 +157,8 @@ public class ArActivity extends AppCompatActivity {
                 earthStage,
                 lunaStage,
                 gopherStage,
-                tsStage
+                tsStage,
+                loadingStage
 
         )
                 .handle(
@@ -163,6 +176,7 @@ public class ArActivity extends AppCompatActivity {
                                 earthRenderable = earthStage.get();
                                 gopherRenderable = gopherStage.get();
                                 tsRenderable = tsStage.get();
+                                loadingRenderable = loadingStage.get();
 
                                 // Everything finished loading successfully.
                                 hasFinishedLoading = true;
@@ -276,6 +290,8 @@ public class ArActivity extends AppCompatActivity {
                                             .subscribe(new DisposableSingleObserver<ResponseData>() {
                                                 @Override
                                                 public void onSuccess(ResponseData responseData) {
+                                                    Toast.makeText(instance, "認証に成功しました", Toast.LENGTH_LONG).show();
+
                                                     AugmentedFace face = faceList.iterator().next();
 
                                                     List languages = responseData.getGithubData().getLanguageList();
@@ -291,16 +307,17 @@ public class ArActivity extends AppCompatActivity {
 
                                                 @Override
                                                 public void onError(Throwable e) {
-//                                                    AugmentedFace face = faceList.iterator().next();
-//                                                    List<String> languages = Arrays.asList("go");
-//                                                    Node faceNode = createFaceSystem(face, languages);
-//                                                    icon = HttpUtil.INSTANCE.getIcon("https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg");
-//                                                    faceNode.setParent(scene);
-//
-//                                                    Node iconNode = new Node();
-//                                                    iconNode.setRenderable(iconRenderable);
-//                                                    iconNode.setLocalPosition(new Vector3(0.0f, 0.1f, 0.1f));
-//                                                    useFaceNode = faceNode;
+                                                    Toast.makeText(instance, "認証に失敗しました", Toast.LENGTH_LONG).show();
+                                                    AugmentedFace face = faceList.iterator().next();
+                                                    List<String> languages = Arrays.asList("go");
+                                                    Node faceNode = createFaceSystem(face, languages);
+                                                    icon = HttpUtil.INSTANCE.getIcon("https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg");
+                                                    faceNode.setParent(scene);
+
+                                                    Node iconNode = new Node();
+                                                    iconNode.setRenderable(iconRenderable);
+                                                    iconNode.setLocalPosition(new Vector3(0.0f, 0.1f, 0.1f));
+                                                    useFaceNode = faceNode;
                                                 }
                                             });
                                 }, new Handler());

@@ -14,15 +14,22 @@
    limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ar.ArActivity">
 
-  <fragment android:name= "gotitapi.haro_scoutar.ar.FaceArFragment"
-      android:id="@+id/face_fragment"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
+    <fragment
+        android:id="@+id/face_fragment"
+        android:name="gotitapi.haro_scoutar.ar.FaceArFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/tramp_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/hashimoto"/>
 
 </RelativeLayout>

@@ -78,7 +78,7 @@
   },
   samplers: [
     {
-      file: 'sampledata/models/ts\\ts.png',
+      file: 'sampledata/models/ts/ts.png',
       name: 'ts',
       pipeline_name: 'ts.png',
     },

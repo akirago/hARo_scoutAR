@@ -9,6 +9,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.widget.Toast;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -145,7 +146,7 @@ public class ArActivity extends AppCompatActivity {
                 ModelRenderable.builder().setSource(this, Uri.parse("Luna.sfb")).build();
         CompletableFuture<ModelRenderable> gopherStage =
                 ModelRenderable.builder().setSource(this, Uri.parse("gopher.sfb")).build();
-        CompletableFuture<ModelRenderable>  loadingStage=
+        CompletableFuture<ModelRenderable> loadingStage =
                 ModelRenderable.builder().setSource(this, Uri.parse("gopher.sfb")).build();
 
 
@@ -279,8 +280,9 @@ public class ArActivity extends AppCompatActivity {
                                     });
                                     Single.create(((SingleOnSubscribe<ResponseData>) emitter -> {
                                         try {
-                                            ResponseData data = HttpUtil.INSTANCE.getProfile(bitmap);
-                                            emitter.onSuccess(data);
+                                            emitter.onError(new Throwable());
+//                                            ResponseData data = HttpUtil.INSTANCE.getProfile(bitmap);
+//                                            emitter.onSuccess(data);
                                         } catch (Throwable t) {
                                             emitter.onError(t);
                                         }
@@ -311,13 +313,44 @@ public class ArActivity extends AppCompatActivity {
                                                     AugmentedFace face = faceList.iterator().next();
                                                     List<String> languages = Arrays.asList("go");
                                                     Node faceNode = createFaceSystem(face, languages);
-                                                    icon = HttpUtil.INSTANCE.getIcon("https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg");
-                                                    faceNode.setParent(scene);
+                                                    Single.create((SingleOnSubscribe<Bitmap>) emitter -> {
+                                                        try {
+                                                            icon = HttpUtil.INSTANCE.getIcon("https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg");
+                                                            emitter.onSuccess(icon);
+                                                        } catch (Throwable t) {
+                                                            emitter.onError(t);
+                                                        }
+                                                    })
+                                                            .subscribeOn(Schedulers.io())
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .subscribe(new DisposableSingleObserver<Bitmap>() {
+                                                                @Override
+                                                                public void onSuccess(Bitmap bitmap) {
+                                                                    ((ImageView) findViewById(R.id.tramp_view)).setImageBitmap(bitmap);
+                                                                    faceNode.setParent(scene);
 
-                                                    Node iconNode = new Node();
-                                                    iconNode.setRenderable(iconRenderable);
-                                                    iconNode.setLocalPosition(new Vector3(0.0f, 0.1f, 0.1f));
-                                                    useFaceNode = faceNode;
+                                                                    Node iconNode = new Node();
+                                                                    iconNode.setRenderable(iconRenderable);
+                                                                    iconNode.setLocalPosition(new Vector3(0.0f, 0.1f, 0.1f));
+                                                                    useFaceNode = faceNode;
+                                                                }
+
+                                                                @Override
+                                                                public void onError(Throwable e) {
+//                                                                    AugmentedFace face = faceList.iterator().next();
+//                                                                    List<String> languages = Arrays.asList("go", "earth", "kotlin");
+//                                                                    Node faceNode = createFaceSystem(face, languages);
+//                                                                    faceNode.setParent(scene);
+////                                AugmentedFaceNode faceNodeTmp = new AugmentedFaceNode(face);
+//                                faceNodeTmp.setParent(scene);
+//                                faceNodeTmp.setFaceRegionsRenderable(earthRenderable);
+//                                faceNodeTmp.setFaceMeshTexture(faceMeshTexture);
+//                                faceNode = faceNodeTmp;
+//                                Node solarSystem = createSolarSystem();
+//                                                                    useFaceNode = faceNode;
+
+                                                                }
+                                                            });
                                                 }
                                             });
                                 }, new Handler());
@@ -490,7 +523,7 @@ public class ArActivity extends AppCompatActivity {
     }
 
     private void onSingleTap() {
-        Log.d("onTap","tap!");
+        Log.d("onTap", "tap!");
         if (icon != null) {
             Texture.builder().setSource(icon).build().thenAccept(
                     texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(

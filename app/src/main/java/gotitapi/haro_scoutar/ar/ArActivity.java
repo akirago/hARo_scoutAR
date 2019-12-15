@@ -67,6 +67,20 @@ public class ArActivity extends AppCompatActivity {
     private ModelRenderable tsRenderable;
     //    private ViewRenderable solarControlsRenderable;
     //    private ViewRenderable solarControlsRenderable;
+
+    private ModelRenderable cppRenderable;
+    private ModelRenderable csRenderable;
+    private ModelRenderable cssRenderable;
+    private ModelRenderable dRenderable;
+    private ModelRenderable haskellRenderable;
+    private ModelRenderable htmlRenderable;
+    private ModelRenderable javascriptRenderable;
+    private ModelRenderable perlRenerable;
+    private ModelRenderable phpRenderable;
+    private ModelRenderable rubyRenderable;
+    private ModelRenderable rustRenderable;
+    private ModelRenderable swiftRenderable;
+    private ModelRenderable javaRenderable;
     private boolean notLoading = true;
 
     private Texture faceMeshTexture;
@@ -136,6 +150,93 @@ public class ArActivity extends AppCompatActivity {
                         })
         );
 
+                Texture.builder().setSource(this, R.drawable.cpp).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                             cppRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.cs).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            csRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.dman).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            dRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.haskell).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            haskellRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.html).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            htmlRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.javascript).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            javascriptRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.perl).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            perlRenerable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.php).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            phpRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.ruby).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            rubyRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+
+        Texture.builder().setSource(this, R.drawable.rust).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            rustRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.swift).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            swiftRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+        Texture.builder().setSource(this, R.drawable.java).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            javaRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+
+
 
         // Build all the planet models.
 
@@ -195,6 +296,19 @@ public class ArActivity extends AppCompatActivity {
                             languageMap.put("kotlin", kotlinRenderable);
                             languageMap.put("python", pythonRenderable);
                             languageMap.put("scala", slacaRenderable);
+                            languageMap.put("cpp",cppRenderable);
+                            languageMap.put("cs",csRenderable);
+                            languageMap.put("dman",dRenderable);
+                            languageMap.put("haskel",haskellRenderable);
+                            languageMap.put("html",htmlRenderable);
+                            languageMap.put("java",javaRenderable);
+                            languageMap.put("js",javascriptRenderable);
+                            languageMap.put("perl",perlRenerable);
+                            languageMap.put("php",phpRenderable);
+                            languageMap.put("ruby",rubyRenderable);
+                            languageMap.put("rust",rustRenderable);
+                            languageMap.put("swift",swiftRenderable);
+
                             return null;
                         });
 
@@ -314,7 +428,7 @@ public class ArActivity extends AppCompatActivity {
                                                 public void onError(Throwable e) {
                                                     Toast.makeText(instance, "認証に失敗しました", Toast.LENGTH_LONG).show();
                                                     loading.setParent(null);
-                                                    List<String> languages = Arrays.asList("go");
+                                                    List<String> languages = Arrays.asList("java","php","dman");
 
                                                     createFaceSystem(faceNode,languages);
                                                     faceNode.setParent(scene);
@@ -466,7 +580,7 @@ public class ArActivity extends AppCompatActivity {
         double scale = 0.1f;
         double adder = 0.0f;
         for (String language : languages) {
-            createPlanet(language, base, (float) (0.2f + adder * scale), (float) (20f + adder), languageMap.get(language), (float) (0.015f * 5 - 0.001f * adder), 0);
+            createPlanet(language, base, (float) (0.2f + adder * scale), (float) (20f + adder*5), languageMap.get(language), (float) (0.015f * 5 - 0.001f * adder), 0);
             adder += 1;
         }
 

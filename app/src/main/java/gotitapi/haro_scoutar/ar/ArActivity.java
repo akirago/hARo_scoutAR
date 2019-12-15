@@ -8,8 +8,8 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
-import android.widget.Toast;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -65,6 +65,19 @@ public class ArActivity extends AppCompatActivity {
     private ModelRenderable pythonRenderable;
     private ModelRenderable slacaRenderable;
     private ModelRenderable tsRenderable;
+    private ModelRenderable cppRenderable;
+    private ModelRenderable csRenderable;
+    private ModelRenderable cssRenderable;
+    private ModelRenderable dRenderable;
+    private ModelRenderable haskellRenderable;
+    private ModelRenderable htmlRenderable;
+    private ModelRenderable javascriptRenderable;
+    private ModelRenderable perlRenerable;
+    private ModelRenderable phpRenderable;
+    private ModelRenderable rubyRenderable;
+    private ModelRenderable rustRenderable;
+    private ModelRenderable swiftRenderable;
+
     //    private ViewRenderable solarControlsRenderable;
     //    private ViewRenderable solarControlsRenderable;
     private boolean notLoading = true;
@@ -120,31 +133,105 @@ public class ArActivity extends AppCompatActivity {
 //                                  ShapeFactory.makeSphere(0.1f, new Vector3(0.0f, 0.15f, 0.0f), material);
                                     ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
                         })
-        );
-        Texture.builder().setSource(this, R.drawable.scala).build().thenAccept(
-                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
-                        material -> {
-                            slacaRenderable =
-                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
-                        })
-        );
-        Texture.builder().setSource(this, R.drawable.loading).build().thenAccept(
-                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
-                        material -> {
-                            slacaRenderable =
-                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
-                        })
-        );
 
+        );
+//        Texture.builder().setSource(this, R.drawable.scala).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            slacaRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.loading).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            slacaRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.cpp).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                             cppRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.cs).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            csRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.dman).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            dRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.haskell).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            haskellRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.html).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            htmlRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.javascript).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            javascriptRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.perl).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            perlRenerable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.php).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            phpRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.ruby).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            rubyRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//
+//        Texture.builder().setSource(this, R.drawable.rust).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            rustRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
+//        Texture.builder().setSource(this, R.drawable.swift).build().thenAccept(
+//                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+//                        material -> {
+//                            swiftRenderable =
+//                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+//                        })
+//        );
 
         // Build all the planet models.
 
         CompletableFuture<ModelRenderable> tsStage =
                 ModelRenderable.builder().setSource(this, Uri.parse("ts.sfb")).build();
-        CompletableFuture<ModelRenderable> earthStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Earth.sfb")).build();
-        CompletableFuture<ModelRenderable> lunaStage =
-                ModelRenderable.builder().setSource(this, Uri.parse("Luna.sfb")).build();
         CompletableFuture<ModelRenderable> gopherStage =
                 ModelRenderable.builder().setSource(this, Uri.parse("gopher.sfb")).build();
         CompletableFuture<ModelRenderable> loadingStage =
@@ -156,12 +243,9 @@ public class ArActivity extends AppCompatActivity {
 //                ViewRenderable.builder().setView(this, R.layout.solar_controls).build();
 
         CompletableFuture.allOf(
-                earthStage,
-                lunaStage,
                 gopherStage,
                 tsStage,
                 loadingStage
-
         )
                 .handle(
                         (notUsed, throwable) -> {
@@ -175,7 +259,6 @@ public class ArActivity extends AppCompatActivity {
                             }
 
                             try {
-                                earthRenderable = earthStage.get();
                                 gopherRenderable = gopherStage.get();
                                 tsRenderable = tsStage.get();
                                 loadingRenderable = loadingStage.get();
@@ -280,6 +363,8 @@ public class ArActivity extends AppCompatActivity {
 
                                         }
                                     });
+
+                                    //できたら回転
                                     Node loading = new Node();
                                     loading.setParent(faceNode);
                                     loading.setRenderable(loadingRenderable);
@@ -336,7 +421,6 @@ public class ArActivity extends AppCompatActivity {
                                                                 public void onSuccess(Bitmap bitmap) {
                                                                     Log.d("icon","deteruyo");
                                                                     ((ImageView) findViewById(R.id.tramp_view)).setImageBitmap(bitmap);
-                                                                    faceNode.setParent(scene);
 
                                                                     Node iconNode = new Node();
                                                                     iconNode.setParent(faceNode);
@@ -372,6 +456,9 @@ public class ArActivity extends AppCompatActivity {
 //                                Log.d("haro_node", "createNode");
                             } else if (faceList.size() == 0 && useFaceNode != null) {
                                 useFaceNode.setParent(null);
+//                                useFaceNode.getChildren().forEach(childNode->{
+//                                useFaceNode.removeChild(childNode);
+//                                });
                                 useFaceNode = null;
                                 notLoading = true;
                             }

@@ -293,21 +293,21 @@ public class ArActivity extends AppCompatActivity {
                                 DemoUtils.displayError(this, "Unable to load renderable", ex);
                             }
 
-                            languageMap.put("kotlin", kotlinRenderable);
-                            languageMap.put("python", pythonRenderable);
-                            languageMap.put("scala", slacaRenderable);
-                            languageMap.put("cpp",cppRenderable);
-                            languageMap.put("cs",csRenderable);
-                            languageMap.put("dman",dRenderable);
-                            languageMap.put("haskel",haskellRenderable);
-                            languageMap.put("html",htmlRenderable);
-                            languageMap.put("java",javaRenderable);
-                            languageMap.put("js",javascriptRenderable);
-                            languageMap.put("perl",perlRenerable);
-                            languageMap.put("php",phpRenderable);
-                            languageMap.put("ruby",rubyRenderable);
-                            languageMap.put("rust",rustRenderable);
-                            languageMap.put("swift",swiftRenderable);
+                            languageMap.put("Kotlin", kotlinRenderable);
+                            languageMap.put("Python", pythonRenderable);
+                            languageMap.put("Scala", slacaRenderable);
+                            languageMap.put("C++",cppRenderable);
+                            languageMap.put("C#",csRenderable);
+                            languageMap.put("D",dRenderable);
+                            languageMap.put("Haskel",haskellRenderable);
+                            languageMap.put("HTML",htmlRenderable);
+                            languageMap.put("Java",javaRenderable);
+                            languageMap.put("JavaScript",javascriptRenderable);
+                            languageMap.put("Perl",perlRenerable);
+                            languageMap.put("PHP",phpRenderable);
+                            languageMap.put("Ruby",rubyRenderable);
+                            languageMap.put("Rust",rustRenderable);
+                            languageMap.put("Swift",swiftRenderable);
 
                             return null;
                         });
@@ -426,9 +426,9 @@ public class ArActivity extends AppCompatActivity {
 
                                                 @Override
                                                 public void onError(Throwable e) {
-                                                    Toast.makeText(instance, "認証に失敗しました", Toast.LENGTH_LONG).show();
+//                                                    Toast.makeText(instance, "認証に失敗しました", Toast.LENGTH_LONG).show();
                                                     loading.setParent(null);
-                                                    List<String> languages = Arrays.asList("java","php","dman");
+                                                    List<String> languages = Arrays.asList("java","kotlin","java","kotlin","python");
 
                                                     createFaceSystem(faceNode,languages);
                                                     faceNode.setParent(scene);

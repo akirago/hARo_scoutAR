@@ -28,6 +28,7 @@ import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -376,24 +377,6 @@ public class ArActivity extends AppCompatActivity {
 
                                 final Bitmap bitmap = Bitmap.createBitmap(arSceneView.getWidth(), arSceneView.getHeight(), Bitmap.Config.ARGB_8888);
                                 PixelCopy.request(arSceneView, bitmap, copyResult -> {
-                                    Single.create((SingleOnSubscribe<String>) emitter -> {
-                                        try {
-                                            // 一個emitして完了
-                                            emitter.onSuccess("Single Hello");
-                                        } catch (Exception ex) {
-                                            emitter.onError(ex);
-                                        }
-                                    }).subscribe(new DisposableSingleObserver<String>() {
-                                        @Override
-                                        public void onSuccess(String value) {
-                                            // 一回呼ばれる
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-
-                                        }
-                                    });
                                     Node loading = new Node();
                                     loading.setParent(faceNode);
                                     loading.setRenderable(loadingRenderable);
@@ -403,7 +386,6 @@ public class ArActivity extends AppCompatActivity {
 
                                     Single.create(((SingleOnSubscribe<ResponseData>) emitter -> {
                                         try {
-//                                            emitter.onError(new Throwable());
                                             ResponseData data = HttpUtil.INSTANCE.getProfile(bitmap);
                                             emitter.onSuccess(data);
                                         } catch (Throwable t) {
@@ -420,6 +402,10 @@ public class ArActivity extends AppCompatActivity {
 
                                                     List languages = responseData.getGithubData().getLanguageList();
                                                     createFaceSystem(faceNode, languages);
+                                                    faceNode.setParent(scene);
+//                                                    Bitmap icon = responseData.getTwitterData().getImage();
+
+                                                    useFaceNode = faceNode;
 
                                                     Log.d("haro_node", "createNode");
                                                 }

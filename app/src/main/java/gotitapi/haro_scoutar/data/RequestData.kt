@@ -1,9 +1,13 @@
 package gotitapi.haro_scoutar.data
 
 import android.graphics.Bitmap
+import android.util.Log
+import com.google.gson.JsonParser
 import gotitapi.haro_scoutar.api.fromBase64toBitmap
 import gotitapi.haro_scoutar.api.toBase64
 import org.json.JSONObject
+
+
 
 val KEY_NAME = "name"
 val KEY_FACE = "face_image"
@@ -28,26 +32,34 @@ data class RequestData(
 }
 
 data class ResponseData(val jsonObject: JSONObject) {
-    val name = jsonObject.optString(KEY_NAME, "")!!
-    val twitterData = TwitterData(jsonObject.getJSONObject("twitter_info"))
-    val githubData = GithubData(jsonObject.getJSONObject("github_info"))
+    val data = jsonObject.optJSONObject("data")
+    val name = data.optString(KEY_NAME, "")!!
+    val twitterData = TwitterData(data.getJSONObject("twitter_info"))
+    val githubData = GithubData(data.getJSONObject("github_info"))
 }
 
 data class TwitterData(val jsonObject: JSONObject) {
     val name = jsonObject.optString(KEY_NAME, "")!!
-    val image = jsonObject.optString(KEY_IMAGE, "").fromBase64toBitmap()
+//    val image = jsonObject.optString(KEY_IMAGE, "").fromBase64toBitmap()
     val introduction = jsonObject.optString(KEY_INTRODUCTION, "")
 }
 
 data class GithubData(val jsonObject: JSONObject) {
     val name = jsonObject.optString(KEY_NAME, "")!!
-    val image = jsonObject.optString(KEY_IMAGE, "").fromBase64toBitmap()
+//    val image = jsonObject.optString(KEY_IMAGE, "").fromBase64toBitmap()
     val introduction = jsonObject.optString(KEY_INTRODUCTION, "")
     val languageList = jsonObject.getJSONArray("language").let {
-        val list = ArrayList<String>()
-//        for (i in 0 until it.length()) {
-//            list.add(it[i] as String)
-//        }
+        val list = mutableListOf<String>()
+        for (i in 0 until it.length()) {
+            println("testtest start")
+
+            val jsonObject = it[i] as JSONObject
+            val name = jsonObject.optString("name", "go")
+            val amount = jsonObject.optString("amount", "10")
+            println("testtest $name")
+            println("testtest $amount")
+            list.add(name)
+        }
         list
     }
 }

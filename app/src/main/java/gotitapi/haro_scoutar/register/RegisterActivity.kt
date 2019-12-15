@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -63,8 +64,9 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 //            )
             launch(Dispatchers.IO) {
                 runCatching {
-//                    HttpUtil.getProfile(photo_image_view.drawable.toBitmap())
-                    HttpUtil.registerProfile(RequestData("name", photo_image_view.drawable.toBitmap(), "twitter", "github"))
+                    HttpUtil.getProfile(photo_image_view.drawable.toBitmap())
+//                    HttpUtil.registerProfile(RequestData("name", photo_image_view.drawable.toBitmap(), "twitter", "github"))
+
                 }.onSuccess {
                     withContext(Dispatchers.Main) {
 //                        if (it.isBlank()) {
@@ -75,6 +77,7 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     }
                 }.onFailure {
                     withContext(Dispatchers.Main) {
+                        println(it.message)
                         Toast.makeText(this@RegisterActivity, it.message, Toast.LENGTH_LONG).show()
                     }
                 }

@@ -56,17 +56,20 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         send_button.setOnClickListener {
-//            val data = RequestData(
-//                name_edit_text.text.toString(),
-//                photo_image_view.drawable.toBitmap(),
-//                twitter_edit_text.text.toString(),
-//                github_edit_text.text.toString()
-//            )
+            println("show ${name_edit_text.text.toString()}")
+            println("show ${twitter_edit_text.text.toString()}")
+            println("show ${github_edit_text.text.toString()}")
+            val data = RequestData(
+                name_edit_text.text.toString(),
+                photo_image_view.drawable.toBitmap(),
+                twitter_edit_text.text.toString(),
+                github_edit_text.text.toString()
+            )
             launch(Dispatchers.IO) {
                 runCatching {
-                    HttpUtil.getMock(photo_image_view.drawable.toBitmap())
+//                    HttpUtil.getMock(photo_image_view.drawable.toBitmap())
 //                    HttpUtil.getProfile(photo_image_view.drawable.toBitmap())
-//                    HttpUtil.registerProfile(RequestData("name", photo_image_view.drawable.toBitmap(), "twitter", "github"))
+                    HttpUtil.registerProfile(data)
 
                 }.onSuccess {
                     withContext(Dispatchers.Main) {
@@ -78,7 +81,7 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     }
                 }.onFailure {
                     withContext(Dispatchers.Main) {
-                        println(it.message)
+//                        println(it.message)
                         Toast.makeText(this@RegisterActivity, it.message, Toast.LENGTH_LONG).show()
                     }
                 }

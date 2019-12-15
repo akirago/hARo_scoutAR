@@ -8,8 +8,8 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
-import android.widget.Toast;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,7 +28,6 @@ import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.Texture;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -82,6 +81,7 @@ public class ArActivity extends AppCompatActivity {
     private ModelRenderable rustRenderable;
     private ModelRenderable swiftRenderable;
     private ModelRenderable javaRenderable;
+    private ModelRenderable cRenderable;
     private boolean notLoading = true;
 
     private Texture faceMeshTexture;
@@ -103,6 +103,8 @@ public class ArActivity extends AppCompatActivity {
     private Bitmap icon;
 
     private ArActivity instance;
+
+    private List availableList = Arrays.asList("C","C++","C#","CSS","D","haskell","HTML","Java","JavaScript","Kotlin","Perl","PHP","Ruby","Rust","Swift","Go","TypeScript");
 
     @Override
     @SuppressWarnings({"AndroidApiChecker", "FutureReturnValueIgnored"})
@@ -237,6 +239,14 @@ public class ArActivity extends AppCompatActivity {
                         })
         );
 
+        Texture.builder().setSource(this, R.drawable.c).build().thenAccept(
+                texture -> MaterialFactory.makeTransparentWithTexture(this, texture).thenAccept(
+                        material -> {
+                            cRenderable =
+                                    ShapeFactory.makeCube(new Vector3(0.5f, 0.5f, 0.5f).scaled(1.0f), new Vector3(0.0f, 0.15f, 0.0f), material);
+                        })
+        );
+
 
 
         // Build all the planet models.
@@ -309,6 +319,7 @@ public class ArActivity extends AppCompatActivity {
                             languageMap.put("Ruby",rubyRenderable);
                             languageMap.put("Rust",rustRenderable);
                             languageMap.put("Swift",swiftRenderable);
+                            languageMap.put("C",cRenderable);
 
                             return null;
                         });
@@ -418,7 +429,7 @@ public class ArActivity extends AppCompatActivity {
                                                 public void onError(Throwable e) {
                                                     Toast.makeText(instance, "認証に失敗しました", Toast.LENGTH_LONG).show();
                                                     loading.setParent(null);
-                                                    List<String> languages = Arrays.asList("Java","Kotlin","Java","Kotlin","Python");
+                                                    List<String> languages = Arrays.asList("Java","fff","Java","Kotlin","Python");
 
                                                     createFaceSystem(faceNode,languages);
                                                     faceNode.setParent(scene);
@@ -571,6 +582,9 @@ public class ArActivity extends AppCompatActivity {
         double scale = 0.1f;
         double adder = 0.0f;
         for (String language : languages) {
+            if(!availableList.contains(language)){
+                continue;
+            }
             createPlanet(language, base, (float) (0.2f + adder * scale), (float) (20f + adder*5), languageMap.get(language), (float) (0.015f * 5 - 0.001f * adder), 0);
             adder += 1;
         }

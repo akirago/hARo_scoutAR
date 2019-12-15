@@ -80,17 +80,16 @@ object HttpUtil {
 
     fun getProfile(bitmap: Bitmap): ResponseData {
         val url =
-//            "https://c50cd690.ngrok.io/getinfo"
+            "https://41dcf92b.ngrok.io/test"
             // ↓モック
-            "https://script.googleusercontent.com/macros/echo?user_content_key=m17C-2O7Y33-T05ZaAtg5NQTW-H6kMQEyJn-WSCNg9ys0YMc2FMYobrhFUr8SKM3gOODLndk1c67P1xeDLvisIwDIcpMORNim5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMkLwWFcKOZPZTQ6A19OYO-qfv_HDvlMqy75g4cvgBOIl7rg4Glfcim8mzDTCqnGIg&lib=MWHiZkIRObrNABHwdCNQqltZcfNXvf530"
+//            "https://script.googleusercontent.com/macros/echo?user_content_key=m17C-2O7Y33-T05ZaAtg5NQTW-H6kMQEyJn-WSCNg9ys0YMc2FMYobrhFUr8SKM3gOODLndk1c67P1xeDLvisIwDIcpMORNim5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMkLwWFcKOZPZTQ6A19OYO-qfv_HDvlMqy75g4cvgBOIl7rg4Glfcim8mzDTCqnGIg&lib=MWHiZkIRObrNABHwdCNQqltZcfNXvf530"
         val encodedImage = bitmap.toBase64()
-        val requestBody = encodedImage.toRequestBody("application/json".toMediaTypeOrNull())
+        val requestBody = "".toRequestBody("application/json".toMediaTypeOrNull())
 
         val request = Request
             .Builder()
             .url(url)
-            .put(requestBody)
-            .get()
+            .post(requestBody)
             .build()
 
 
@@ -102,11 +101,12 @@ object HttpUtil {
             Log.e("httpconnection error", e.message + e.cause)
             throw IOException()
         }
-        println("testteststart")
+        println("testteststart ${response.code}")
 //        println("testteststart ${JSONObject(response.body?.string()).optString("data")}")
         var data_json = response.body!!.string().replace("\\", "")
         println("test $data_json")
         val json = JSONObject(data_json)
+        println("test json ${json.optJSONObject("data").optString("name")}")
 //        println("test $string")
 //        val json = JSONObject("{" +
 //                "\"data\": {" +
@@ -136,6 +136,71 @@ object HttpUtil {
 //        val data = ResponseData(JSONObject())
 
         println(data.name)
+        println(data.githubData.languageList)
+//        println(data.twitterData.name)
+        return data
+    }
+
+    fun getMock(bitmap: Bitmap): ResponseData {
+        val url =
+//            "https://c50cd690.ngrok.io/getinfo"
+            "https://41dcf92b.ngrok.io/test"
+            // ↓モック
+//            "https://script.googleusercontent.com/macros/echo?user_content_key=m17C-2O7Y33-T05ZaAtg5NQTW-H6kMQEyJn-WSCNg9ys0YMc2FMYobrhFUr8SKM3gOODLndk1c67P1xeDLvisIwDIcpMORNim5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMkLwWFcKOZPZTQ6A19OYO-qfv_HDvlMqy75g4cvgBOIl7rg4Glfcim8mzDTCqnGIg&lib=MWHiZkIRObrNABHwdCNQqltZcfNXvf530"
+        val encodedImage = bitmap.toBase64()
+        val requestBody = "".toRequestBody("application/json".toMediaTypeOrNull())
+
+        val request = Request
+            .Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+
+
+        val response: Response
+        try {
+            response = client.newCall(request).execute()
+//            Log.d("httpconnection success", response.body?.string())
+        } catch (e: Exception) {
+            Log.e("httpconnection error", e.message + e.cause)
+            throw IOException()
+        }
+//        println("testteststart")
+//        println("testteststart ${JSONObject(response.body?.string()).optString("data")}")
+        var data_json = response.body!!.string().replace("\\", "")
+//        println("test $data_json")
+        val json = JSONObject(data_json)
+//        println("test $string")
+//        val json = JSONObject("{" +
+//                "\"data\": {" +
+//                "\"name\": \"inuneko\"," +
+//                "\"github_info\": {" +
+//                "\"name\": \"inu\"," +
+//                "\"image\": \"ASFSADA..\"," +
+//                "\"introduction\": \"qwerty..\"," +
+//                "\"language\": [{" +
+//                "\"name\": \"java\"," +
+//                "\"amount\": 10000" +
+//                "}, {" +
+//                "\"name\": \"go\"," +
+//                "\"amount\": 200" +
+//                "}]" +
+//                "}," +
+//                "\"twitter_info\": {" +
+//                "\"name\": \"neko\"," +
+//                "\"image\": \"ASDFASDFA..\"," +
+//                "\"introduction\": \"qwerty..\"" +
+//                "}" +
+//                "}" +
+//                "}")
+//        println("test ${json.optJSONObject("data").optString("name")}")
+        val data = ResponseData(json)
+//        println(data.twitterData.name)
+//        val data = ResponseData(JSONObject())
+
+        println("ここ" +data.name)
+        println(data.githubData.languageList[0])
+        println(data.githubData.languageList)
 //        println(data.twitterData.name)
         return data
     }

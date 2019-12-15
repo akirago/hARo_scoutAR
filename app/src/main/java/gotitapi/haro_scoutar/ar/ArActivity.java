@@ -386,8 +386,12 @@ public class ArActivity extends AppCompatActivity {
 
                                     Single.create(((SingleOnSubscribe<ResponseData>) emitter -> {
                                         try {
-                                            ResponseData data = HttpUtil.INSTANCE.getProfile(bitmap);
+                                            ResponseData data = HttpUtil.INSTANCE.getMock(bitmap);
                                             emitter.onSuccess(data);
+//                                            Thread.sleep(4000);
+//
+//                                            emitter.onError(new Throwable());
+
                                         } catch (Throwable t) {
                                             emitter.onError(t);
                                         }
@@ -414,7 +418,7 @@ public class ArActivity extends AppCompatActivity {
                                                 public void onError(Throwable e) {
                                                     Toast.makeText(instance, "認証に失敗しました", Toast.LENGTH_LONG).show();
                                                     loading.setParent(null);
-                                                    List<String> languages = Arrays.asList("Go");
+                                                    List<String> languages = Arrays.asList("Java","Kotlin","Java","Kotlin","Python");
 
                                                     createFaceSystem(faceNode,languages);
                                                     faceNode.setParent(scene);
@@ -422,7 +426,7 @@ public class ArActivity extends AppCompatActivity {
 
                                                     Single.create((SingleOnSubscribe<Bitmap>) emitter -> {
                                                         try {
-                                                            icon = HttpUtil.INSTANCE.getIcon("https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg");
+                                                            icon = HttpUtil.INSTANCE.getIcon("https://pbs.twimg.com/profile_images/1198635999678455808/RcqSD639_reasonably_small.jpg");
                                                             emitter.onSuccess(icon);
                                                         } catch (Throwable t) {
                                                             emitter.onError(t);
@@ -436,11 +440,12 @@ public class ArActivity extends AppCompatActivity {
                                                                 public void onSuccess(Bitmap bitmap) {
                                                                     Log.d("icon","deteruyo");
                                                                     ((ImageView) findViewById(R.id.tramp_view)).setImageBitmap(bitmap);
-                                                                    faceNode.setParent(scene);
+//                                                                    faceNode.setParent(scene);
 
                                                                     Node iconNode = new Node();
                                                                     iconNode.setParent(faceNode);
                                                                     iconNode.setRenderable(iconRenderable);
+                                                                    iconNode.setLocalScale(new Vector3(0.1f, 0.1f, 0.1f));
                                                                     iconNode.setLocalPosition(new Vector3(0.0f, 0.1f, 0.1f));
 
                                                                 }

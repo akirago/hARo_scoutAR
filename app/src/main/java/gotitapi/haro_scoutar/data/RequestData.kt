@@ -51,13 +51,10 @@ data class GithubData(val jsonObject: JSONObject) {
     val languageList = jsonObject.getJSONArray("language").let {
         val list = mutableListOf<String>()
         for (i in 0 until it.length()) {
-            println("testtest start")
 
             val jsonObject = it[i] as JSONObject
             val name = jsonObject.optString("name", "go")
             val amount = jsonObject.optString("amount", "10")
-            println("testtest $name")
-            println("testtest $amount")
             list.add(name)
         }
         list

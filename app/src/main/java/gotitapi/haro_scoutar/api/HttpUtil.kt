@@ -58,9 +58,9 @@ object HttpUtil {
 
 
     fun registerProfile(requestData: RequestData): String {
-        val url = "https://e5a17d44.ngrok.io/register"
+        val url = "https://41dcf92b.ngrok.io/register"
 //        val url = "https://c50cd690.ngrok.io/register"
-        println(requestData.jsonObject)
+        println(requestData.jsonObject.toString())
         val requestBody =
             requestData.jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
         val request = Request

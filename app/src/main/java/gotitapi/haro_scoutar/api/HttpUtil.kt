@@ -3,7 +3,6 @@ package gotitapi.haro_scoutar.api
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import com.google.gson.JsonParser
 import gotitapi.haro_scoutar.data.RequestData
 import gotitapi.haro_scoutar.data.ResponseData
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -13,11 +12,16 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
-
+import java.util.concurrent.TimeUnit
 
 
 object HttpUtil {
-    private val client = OkHttpClient()
+    private val client = OkHttpClient.Builder()
+        .callTimeout(10000, TimeUnit.MINUTES)
+        .connectTimeout(10000, TimeUnit.MINUTES)
+        .readTimeout(10000, TimeUnit.MINUTES)
+        .writeTimeout(10000, TimeUnit.MINUTES).build()
+
 
     const val SCHEME = "http://"
     const val url = ""
@@ -80,8 +84,8 @@ object HttpUtil {
 
     fun getProfile(bitmap: Bitmap): ResponseData {
         val url =
-            "https://41dcf92b.ngrok.io/test"
-            // ↓モック
+            "https://41dcf92b.ngrok.io/getinfo"
+        // ↓モック
 //            "https://script.googleusercontent.com/macros/echo?user_content_key=m17C-2O7Y33-T05ZaAtg5NQTW-H6kMQEyJn-WSCNg9ys0YMc2FMYobrhFUr8SKM3gOODLndk1c67P1xeDLvisIwDIcpMORNim5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMkLwWFcKOZPZTQ6A19OYO-qfv_HDvlMqy75g4cvgBOIl7rg4Glfcim8mzDTCqnGIg&lib=MWHiZkIRObrNABHwdCNQqltZcfNXvf530"
         val encodedImage = bitmap.toBase64()
         val requestBody = "".toRequestBody("application/json".toMediaTypeOrNull())
@@ -144,11 +148,13 @@ object HttpUtil {
     fun getMock(bitmap: Bitmap): ResponseData {
         val url =
 //            "https://c50cd690.ngrok.io/getinfo"
-            "https://41dcf92b.ngrok.io/test"
-            // ↓モック
+            "https://41dcf92b.ngrok.io/getinfo"
+        // ↓モック
 //            "https://script.googleusercontent.com/macros/echo?user_content_key=m17C-2O7Y33-T05ZaAtg5NQTW-H6kMQEyJn-WSCNg9ys0YMc2FMYobrhFUr8SKM3gOODLndk1c67P1xeDLvisIwDIcpMORNim5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMkLwWFcKOZPZTQ6A19OYO-qfv_HDvlMqy75g4cvgBOIl7rg4Glfcim8mzDTCqnGIg&lib=MWHiZkIRObrNABHwdCNQqltZcfNXvf530"
         val encodedImage = bitmap.toBase64()
-        val requestBody = "".toRequestBody("application/json".toMediaTypeOrNull())
+        val requestBody =
+            RequestData("", bitmap, "", "").jsonObject.toString()
+                .toRequestBody("application/json".toMediaTypeOrNull())
 
         val request = Request
             .Builder()
@@ -168,9 +174,9 @@ object HttpUtil {
 //        println("testteststart")
 //        println("testteststart ${JSONObject(response.body?.string()).optString("data")}")
         var data_json = response.body!!.string().replace("\\", "")
-//        println("test $data_json")
+        println("test $data_json")
         val json = JSONObject(data_json)
-//        println("test $string")
+        println("test $json")
 //        val json = JSONObject("{" +
 //                "\"data\": {" +
 //                "\"name\": \"inuneko\"," +
@@ -198,8 +204,7 @@ object HttpUtil {
 //        println(data.twitterData.name)
 //        val data = ResponseData(JSONObject())
 
-        println("ここ" +data.name)
-        println(data.githubData.languageList[0])
+        println("ここ" + data.name)
         println(data.githubData.languageList)
 //        println(data.twitterData.name)
         return data

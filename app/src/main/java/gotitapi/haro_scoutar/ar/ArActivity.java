@@ -297,6 +297,7 @@ public class ArActivity extends AppCompatActivity {
                             languageMap.put("Kotlin", kotlinRenderable);
                             languageMap.put("Python", pythonRenderable);
                             languageMap.put("Scala", slacaRenderable);
+                            languageMap.put("C",cppRenderable);
                             languageMap.put("C++",cppRenderable);
                             languageMap.put("C#",csRenderable);
                             languageMap.put("D",dRenderable);
@@ -309,6 +310,8 @@ public class ArActivity extends AppCompatActivity {
                             languageMap.put("Ruby",rubyRenderable);
                             languageMap.put("Rust",rustRenderable);
                             languageMap.put("Swift",swiftRenderable);
+                            languageMap.put("Jupyter Notebook", pythonRenderable);
+                            languageMap.put("CMake", cppRenderable);
 
                             return null;
                         });

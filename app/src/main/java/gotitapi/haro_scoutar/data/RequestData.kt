@@ -34,8 +34,12 @@ data class RequestData(
 data class ResponseData(val jsonObject: JSONObject) {
     val data = jsonObject.optJSONObject("data")
     val name = data.optString(KEY_NAME, "")!!
-    val twitterData = TwitterData(data.getJSONObject("twitter_info"))
-    val githubData = GithubData(data.getJSONObject("github_info"))
+    val twitterData = data.optJSONObject("twitter_info")?.let {
+        TwitterData(it)
+    } ?: TwitterData(JSONObject())
+    val githubData = data.optJSONObject("github_info")?.let{
+        GithubData(it)
+    } ?: GithubData(JSONObject())
 }
 
 data class TwitterData(val jsonObject: JSONObject) {
@@ -48,7 +52,7 @@ data class GithubData(val jsonObject: JSONObject) {
     val name = jsonObject.optString(KEY_NAME, "")!!
 //    val image = jsonObject.optString(KEY_IMAGE, "").fromBase64toBitmap()
     val introduction = jsonObject.optString(KEY_INTRODUCTION, "")
-    val languageList = jsonObject.getJSONArray("language").let {
+    val languageList = jsonObject.optJSONArray("language")?.let {
         val list = mutableListOf<String>()
         for (i in 0 until it.length()) {
 
@@ -58,5 +62,5 @@ data class GithubData(val jsonObject: JSONObject) {
             list.add(name)
         }
         list
-    }
+    } ?: emptyList<String>()
 }

@@ -46,6 +46,7 @@ data class TwitterData(val jsonObject: JSONObject) {
     val name = jsonObject.optString(KEY_NAME, "")!!
 //    val image = jsonObject.optString(KEY_IMAGE, "").fromBase64toBitmap()
     val introduction = jsonObject.optString(KEY_INTRODUCTION, "")
+    val imageUrl = jsonObject.optString("image_url", "")
 }
 
 data class GithubData(val jsonObject: JSONObject) {

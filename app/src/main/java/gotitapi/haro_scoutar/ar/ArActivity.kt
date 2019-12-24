@@ -323,8 +323,8 @@ class ArActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     )
                     val bitmap = Bitmap.createScaledBitmap(
                         bitmapOrigin,
-                        (bitmapOrigin.width * 0.4).toInt()
-                    , (bitmapOrigin.height *0.4).toInt(), true)
+                        (bitmapOrigin.width * 0.3).toInt()
+                    , (bitmapOrigin.height *0.3).toInt(), true)
                     PixelCopy.request(arSceneView!!, bitmap, { _ ->
                         val loading = Node()
                         loading.setParent(faceNode)

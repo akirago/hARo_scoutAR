@@ -58,8 +58,8 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             val yourBitmap = photo_image_view.drawable.toBitmap()
             val bitmap = Bitmap.createScaledBitmap(
                 yourBitmap,
-                (yourBitmap.width * 0.4).toInt(),
-                (yourBitmap.height * 0.4).toInt(),
+                (yourBitmap.width * 0.3).toInt(),
+                (yourBitmap.height * 0.3).toInt(),
                 true
             );
             val data = RequestData(

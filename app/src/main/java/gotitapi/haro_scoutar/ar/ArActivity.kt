@@ -316,11 +316,15 @@ class ArActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     faceNode.setParent(scene)
                     useFaceNode = faceNode
 
-                    val bitmap = Bitmap.createBitmap(
+                    val bitmapOrigin = Bitmap.createBitmap(
                         arSceneView!!.width,
                         arSceneView!!.height,
                         Bitmap.Config.ARGB_8888
                     )
+                    val bitmap = Bitmap.createScaledBitmap(
+                        bitmapOrigin,
+                        (bitmapOrigin.width * 0.4).toInt()
+                    , (bitmapOrigin.height *0.4).toInt(), true)
                     PixelCopy.request(arSceneView!!, bitmap, { _ ->
                         val loading = Node()
                         loading.setParent(faceNode)

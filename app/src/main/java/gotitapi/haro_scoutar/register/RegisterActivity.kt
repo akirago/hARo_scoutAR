@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -56,24 +55,28 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         send_button.setOnClickListener {
-            println("show ${name_edit_text.text.toString()}")
-            println("show ${twitter_edit_text.text.toString()}")
-            println("show ${github_edit_text.text.toString()}")
+            val yourBitmap = photo_image_view.drawable.toBitmap()
+            val bitmap = Bitmap.createScaledBitmap(
+                yourBitmap,
+                (yourBitmap.width * 0.4).toInt(),
+                (yourBitmap.height * 0.4).toInt(),
+                true
+            );
             val data = RequestData(
                 name_edit_text.text.toString(),
-                photo_image_view.drawable.toBitmap(),
+                bitmap,
                 twitter_edit_text.text.toString(),
                 github_edit_text.text.toString()
             )
             launch(Dispatchers.IO) {
                 runCatching {
-//                    HttpUtil.getMock(photo_image_view.drawable.toBitmap())
+                    //                    HttpUtil.getMock(photo_image_view.drawable.toBitmap())
 //                    HttpUtil.getProfile(photo_image_view.drawable.toBitmap())
                     HttpUtil.registerProfile(data)
 
                 }.onSuccess {
                     withContext(Dispatchers.Main) {
-//                        if (it.isBlank()) {
+                        //                        if (it.isBlank()) {
 //                            finish()
 //                        } else {
 //                            Toast.makeText(this@RegisterActivity, it, Toast.LENGTH_LONG).show()
@@ -81,7 +84,7 @@ class RegisterActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                     }
                 }.onFailure {
                     withContext(Dispatchers.Main) {
-//                        println(it.message)
+                        //                        println(it.message)
                         Toast.makeText(this@RegisterActivity, it.message, Toast.LENGTH_LONG).show()
                     }
                 }
